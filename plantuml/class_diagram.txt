@@ -1,0 +1,44 @@
+@startuml
+
+entity Client {
+    -id : int
+    -name : String
+}
+
+entity Chantier {
+    -id : int
+    -codeChantier : String
+    -name : String
+}
+
+
+entity Intervention {
+    -id : Long
+    -name : String
+}
+
+entity Week {
+    -id : byte
+    -workingDays : byte
+    -isHoliday : boolean
+}
+
+/'
+A client can exist without any chantier and have many chantiers
+A chantier can exist without a client but can only have one max
+'/
+Client "0..1" -- "0..*" Chantier
+
+/'
+A chantier can exist before any intervention and have many interventions
+An intervention is always tied to one chantier
+'/
+Chantier "1" -- "0..*" Intervention
+
+/'
+An intervention occurs in one or many weeks but cannot exist without at least one week
+A week can have no interventions or many
+'/
+Intervention "0..*" -- "1..*" Week
+
+@enduml

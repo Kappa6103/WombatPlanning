@@ -1,31 +1,32 @@
-package com.wombatplanning.models;
+package com.wombatplanning.models.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Setter
+@Getter
+@NoArgsConstructor
 @Entity
-@Table(
-        name = "chantier",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uq_chantier_client_name",
-                        columnNames = { "client_id", "name" }
-                )
-        }
-)
+@Table(name = "chantiers")
 public class Chantier {
 
     @Id
+    @Column(name = "chantier_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false, length = 100)
+    @UniqueElements
+    @Column(nullable = false, length = 20)
     private String name;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY) //Many instances of the current entity (e.g., Chantier) can be associated with one instance of the target entity (Client)
+    @JoinColumn(name = "client_id", nullable = true)
     private Client client;
 
     @OneToMany(
