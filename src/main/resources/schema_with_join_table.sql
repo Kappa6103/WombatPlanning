@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS
     chantiers,
     interventions,
     weeks,
-    scheduled_tasks
+    intervention_weeks
 ;
 
 -- =====================================================
@@ -22,7 +22,7 @@ CREATE TABLE users (
     user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL
+    password VARCHAR(50) NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ON users (email);
 
@@ -83,6 +83,7 @@ CREATE TABLE interventions (
     intervention_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
     chantier_id BIGINT NOT NULL,
+    description VARCHAR(255),
     -- BELONGS TO USER
     CONSTRAINT fk_intervention_user
         FOREIGN KEY (user_id)
@@ -101,15 +102,12 @@ CREATE INDEX IF NOT EXISTS ON interventions (chantier_id);
 CREATE INDEX IF NOT EXISTS ON interventions (user_id);
 
 -- =====================================================
--- Table: weeks // maybe change PK ALWAYS to BY DEFAULT
---    // maybe year field too
+-- Table: weeks
 -- =====================================================
 CREATE TABLE weeks (
-    week_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    week_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    week_number INT NOT NULL,
-    year INT NOT NULL,
-    is_holiday BOOLEAN NOT NULL DEFAULT false,
+    working_days INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_week_user
         FOREIGN KEY (user_id)
@@ -117,38 +115,29 @@ CREATE TABLE weeks (
             ON DELETE NO ACTION
             ON UPDATE CASCADE
 );
-CREATE INDEX IF NOT EXISTS ON weeks (user_id);
+CREATE INDEX IF NOT EXISTS ON weeks (user_id)
 
 -- =====================================================
--- Table: scheduled_tasks // no unique constraint
+-- Table: intervention_weeks LINK TABLE
 -- =====================================================
-CREATE TABLE scheduled_tasks (
-    scheduled_task_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+CREATE TABLE intervention_weeks (
     intervention_id BIGINT NOT NULL,
-    week_id INT NOT NULL,
-    description VARCHAR(255),
-    -- BELONGS TO USER
-    CONSTRAINT fk_scheduled_tasks_user
-        FOREIGN KEY (user_id)
-            REFERENCES users (user_id)
-            ON DELETE NO ACTION
-            ON UPDATE CASCADE,
-    CONSTRAINT fk_intervention_weeks_intervention
+    week_id BIGINT NOT NULL,
+
+    PRIMARY KEY (intervention_id, week_id),
+
+    CONSTRAINT fk_intervention_weeks_intervention_id
         FOREIGN KEY (intervention_id)
             REFERENCES interventions (intervention_id)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
-    CONSTRAINT fk_intervention_weeks_week
+
+    CONSTRAINT fk_intervention_weeks_week_id
         FOREIGN KEY (week_id)
             REFERENCES weeks (week_id)
             ON DELETE NO ACTION
             ON UPDATE CASCADE
 );
-CREATE INDEX IF NOT EXISTS ON scheduled_tasks (user_id);
-CREATE INDEX IF NOT EXISTS ON scheduled_tasks (intervention_id);
-CREATE INDEX IF NOT EXISTS ON scheduled_tasks (week_id);
 
-CREATE TABLE years (
+CREATE INDEX IF NOT EXISTS idx_int_weeks_week_id ON intervention_weeks (week_id);
 
-);

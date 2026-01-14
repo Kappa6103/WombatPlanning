@@ -4,17 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
-@Table(name = "interventions")
-public class Intervention {
+@Table(name = "scheduled_tasks")
+public class ScheduledTask {
 
     @Id
-    @Column(name = "intervention_id")
+    @Column(name = "scheduled_task_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -22,11 +19,15 @@ public class Intervention {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(length = 255)
+    private String description;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "chantier_id", nullable = false)
-    private Chantier chantier;
+    @JoinColumn(name = "intervention_id", nullable = false)
+    private Intervention intervention;
 
-    @OneToMany(mappedBy = "intervention")
-    private List<ScheduledTask> scheduledTasks = new ArrayList<>();
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "week_id", nullable = false)
+    private Week week;
+
 }
-
