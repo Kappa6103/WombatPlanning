@@ -2,11 +2,13 @@ package com.wombatplanning.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "scheduled_tasks")
 public class ScheduledTask {
 
@@ -29,5 +31,9 @@ public class ScheduledTask {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "week_id", nullable = false)
     private Week week;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "typology_id")
+    private Typology typology;
 
 }

@@ -3,6 +3,8 @@
 entity User {
     -id : Long
     -name : String
+    -email : String
+    -password : String
 }
 
 entity Client {
@@ -12,25 +14,36 @@ entity Client {
 
 entity Chantier {
     -id : Long
-    -codeChantier : String
     -name : String
 }
 
 
 entity Intervention {
     -id : Long
-    -name : String
-}
-
-entity Week {
-    -id : Integer
-    -workingDays : Integer
-    -isHoliday : boolean
 }
 
 entity ScheduledTask {
     -id : Integer
+    -description : String
 }
+
+entity Week {
+    -id : Integer
+    -isHoliday : boolean
+    -week_number : Integer
+    -year : Integer
+}
+
+entity Typology {
+    -id : Long
+    -name : String
+}
+
+
+/'
+many to one
+'/
+Typology "1" -- "1..*" ScheduledTask
 
 /'
 A User can exist without any client and have many client
@@ -58,8 +71,8 @@ An InterventionWeek cannot exist without exactly one intervention
 Intervention "1" -- "1..*" ScheduledTask
 
 /'
-An InterventionWeek cannot exist without atleast one Week
-a Week can exist without any InterventionWeek and have many
+A ScheduledTask cannot exist without at least one Week
+a Week can exist without any ScheduleTask and have many
 '/
 ScheduledTask "0..*"  -- "1" Week
 

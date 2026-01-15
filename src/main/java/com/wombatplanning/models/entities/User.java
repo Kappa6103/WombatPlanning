@@ -2,14 +2,17 @@ package com.wombatplanning.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -27,6 +30,9 @@ public class User {
     @Column(nullable = false, length = 100)
     private String password;
 
+    @Column(name = "is_admin", nullable = false)
+    private Boolean isAdmin;
+
     /*
     In JPA, mappedBy is used to define the "inverse" side of a bidirectional relationship.
     It tells Hibernate:
@@ -38,5 +44,17 @@ public class User {
      */
     @OneToMany(mappedBy = "user")
     private Set<Client> clientSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Chantier> chantierSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Intervention> interventionsSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<ScheduledTask> scheduledTaskSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Week> weekSet = new TreeSet<>();
 
 }

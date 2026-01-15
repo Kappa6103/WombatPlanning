@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS
     clients,
     chantiers,
     interventions,
-    weeks,
-    scheduled_tasks
+    scheduled_tasks,
+    weeks
 ;
 
 -- =====================================================
@@ -22,7 +22,8 @@ CREATE TABLE users (
     user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL
+    password VARCHAR(100) NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT false,
 );
 CREATE INDEX IF NOT EXISTS ON users (email);
 
@@ -108,16 +109,19 @@ CREATE TABLE weeks (
     week_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
     week_number INT NOT NULL,
-    year INT NOT NULL,
     is_holiday BOOLEAN NOT NULL DEFAULT false,
+    year_number INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_week_user
         FOREIGN KEY (user_id)
             REFERENCES users (user_id)
             ON DELETE NO ACTION
-            ON UPDATE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT UNIQUE (user_id, week_number, year_number)
 );
 CREATE INDEX IF NOT EXISTS ON weeks (user_id);
+CREATE INDEX IF NOT EXISTS ON weeks (week_number);
+CREATE INDEX IF NOT EXISTS ON weeks (year_number);
 
 -- =====================================================
 -- Table: scheduled_tasks // no unique constraint
@@ -127,6 +131,7 @@ CREATE TABLE scheduled_tasks (
     user_id BIGINT NOT NULL,
     intervention_id BIGINT NOT NULL,
     week_id INT NOT NULL,
+    typology_id BIGINT NOT NULL,
     description VARCHAR(255),
     -- BELONGS TO USER
     CONSTRAINT fk_scheduled_tasks_user
@@ -149,6 +154,18 @@ CREATE INDEX IF NOT EXISTS ON scheduled_tasks (user_id);
 CREATE INDEX IF NOT EXISTS ON scheduled_tasks (intervention_id);
 CREATE INDEX IF NOT EXISTS ON scheduled_tasks (week_id);
 
-CREATE TABLE years (
-
+-- =====================================================
+-- Table: typologies
+-- =====================================================
+CREATE TABLE typologies (
+    typology_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(20) NOT NULL,
+    -- BELONGS TO USER
+    CONSTRAINT fk_typologies_user
+        FOREIGN KEY (user_id)
+            REFERENCES users (user_id)
+            ON DELETE NO ACTION
+            ON UPDATE CASCADE,
+    CONSTRAINT UNIQUE (user_id, name)
 );

@@ -2,14 +2,16 @@ package com.wombatplanning.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "interventions")
 public class Intervention {
 
@@ -27,6 +29,8 @@ public class Intervention {
     private Chantier chantier;
 
     @OneToMany(mappedBy = "intervention")
-    private List<ScheduledTask> scheduledTasks = new ArrayList<>();
+    private Set<ScheduledTask> scheduledTasks = new HashSet<>();
+
+
 }
 

@@ -1,13 +1,19 @@
 package com.wombatplanning.models.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "weeks")
-public class Week implements Comparable {
+public class Week {
 
     @Id
     @Column(name = "week_id")
@@ -24,12 +30,11 @@ public class Week implements Comparable {
     @Column(name = "is_holiday", nullable = false)
     private Boolean isHoliday;
 
-    @OneToMany(mappedBy = "week", fetch = FetchType.LAZY)
-    private List<ScheduledTask> scheduledTaskList = new ArrayList<>();
+    @Column(name = "year_number", nullable = false)
+    private Integer yearNumber;
 
-    @Override
-    public int compareTo(Object o) {
-        return 0;
-    }
+    @OneToMany(mappedBy = "week", fetch = FetchType.LAZY)
+    private Set<ScheduledTask> scheduledTaskList = new TreeSet<>();
+
 
 }

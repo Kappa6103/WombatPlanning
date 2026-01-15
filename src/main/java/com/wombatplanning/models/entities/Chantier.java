@@ -2,6 +2,7 @@ package com.wombatplanning.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "chantiers")
 public class Chantier {
 
@@ -32,6 +34,6 @@ public class Chantier {
     private Client client;
 
     @OneToMany(mappedBy = "chantier")
-    private final Set<Intervention> interventions = new HashSet<>();
+    private Set<Intervention> interventions = new HashSet<>();
 
 }
