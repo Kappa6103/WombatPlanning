@@ -12,7 +12,9 @@ DROP TABLE IF EXISTS
     chantiers,
     interventions,
     scheduled_tasks,
-    weeks
+    weeks,
+    typologies
+CASCADE
 ;
 
 -- =====================================================
@@ -23,9 +25,8 @@ CREATE TABLE users (
     name VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
-    is_admin BOOLEAN NOT NULL DEFAULT false,
+    is_admin BOOLEAN NOT NULL DEFAULT false
 );
-CREATE INDEX IF NOT EXISTS ON users (email);
 
 -- =====================================================
 -- Table: clients // to add : created_at, last_update
@@ -42,10 +43,9 @@ CREATE TABLE clients (
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
     -- UNIQUENESS CONSTRAINT
-    CONSTRAINT UNIQUE (user_id, name)
+    UNIQUE (user_id, name)
 );
-CREATE INDEX IF NOT EXISTS
-    ON clients (user_id);
+CREATE INDEX IF NOT EXISTS idx_clients_user_id ON clients (user_id);
 
 -- =====================================================
 -- Table: chantiers // to add : created_at, last_update
@@ -64,7 +64,7 @@ CREATE TABLE chantiers (
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
     -- UNIQUENESS CONSTRAINT
-    CONSTRAINT UNIQUE (user_id, name),
+    UNIQUE (user_id, name),
 
     CONSTRAINT fk_chantier_client
         FOREIGN KEY (client_id)
@@ -73,8 +73,8 @@ CREATE TABLE chantiers (
             ON UPDATE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS ON chantiers (client_id);
-CREATE INDEX IF NOT EXISTS ON chantiers (user_id);
+CREATE INDEX IF NOT EXISTS idx_chantiers_client_id ON chantiers (client_id);
+CREATE INDEX IF NOT EXISTS idx_chantiers_user_id ON chantiers (user_id);
 
 -- =====================================================
 -- Table: interventions // add created_at and last_updated
@@ -98,8 +98,8 @@ CREATE TABLE interventions (
             ON UPDATE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS ON interventions (chantier_id);
-CREATE INDEX IF NOT EXISTS ON interventions (user_id);
+CREATE INDEX IF NOT EXISTS idx_interventions_chantier_id ON interventions (chantier_id);
+CREATE INDEX IF NOT EXISTS idx_interventions_user_id ON interventions (user_id);
 
 -- =====================================================
 -- Table: weeks // maybe change PK ALWAYS to BY DEFAULT
@@ -117,11 +117,11 @@ CREATE TABLE weeks (
             REFERENCES users (user_id)
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
-    CONSTRAINT UNIQUE (user_id, week_number, year_number)
+    UNIQUE (user_id, week_number, year_number)
 );
-CREATE INDEX IF NOT EXISTS ON weeks (user_id);
-CREATE INDEX IF NOT EXISTS ON weeks (week_number);
-CREATE INDEX IF NOT EXISTS ON weeks (year_number);
+CREATE INDEX IF NOT EXISTS idx_weeks_user_id ON weeks (user_id);
+CREATE INDEX IF NOT EXISTS idx_weeks_week_number ON weeks (week_number);
+CREATE INDEX IF NOT EXISTS idx_weeks_year_number ON weeks (year_number);
 
 -- =====================================================
 -- Table: scheduled_tasks // no unique constraint
@@ -150,9 +150,9 @@ CREATE TABLE scheduled_tasks (
             ON DELETE NO ACTION
             ON UPDATE CASCADE
 );
-CREATE INDEX IF NOT EXISTS ON scheduled_tasks (user_id);
-CREATE INDEX IF NOT EXISTS ON scheduled_tasks (intervention_id);
-CREATE INDEX IF NOT EXISTS ON scheduled_tasks (week_id);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_user_id ON scheduled_tasks (user_id);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_intervention_id ON scheduled_tasks (intervention_id);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_week_id ON scheduled_tasks (week_id);
 
 -- =====================================================
 -- Table: typologies
@@ -167,5 +167,5 @@ CREATE TABLE typologies (
             REFERENCES users (user_id)
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
-    CONSTRAINT UNIQUE (user_id, name)
+    UNIQUE (user_id, name)
 );

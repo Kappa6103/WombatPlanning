@@ -41,7 +41,7 @@ CREATE TABLE clients (
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
     -- UNIQUENESS CONSTRAINT
-    CONSTRAINT UNIQUE (user_id, name)
+    UNIQUE (user_id, name)
 );
 CREATE INDEX IF NOT EXISTS
     ON clients (user_id);
@@ -63,7 +63,7 @@ CREATE TABLE chantiers (
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
     -- UNIQUENESS CONSTRAINT
-    CONSTRAINT UNIQUE (user_id, name),
+    UNIQUE (user_id, name),
 
     CONSTRAINT fk_chantier_client
         FOREIGN KEY (client_id)

@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Entity
 @NoArgsConstructor
 @Table(name = "typologies")
 public class Typology {
