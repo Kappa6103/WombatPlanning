@@ -130,7 +130,7 @@ CREATE TABLE scheduled_tasks (
     scheduled_task_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
     intervention_id BIGINT NOT NULL,
-    week_id INT NOT NULL,
+    week_id BIGINT NOT NULL,
     typology_id BIGINT NOT NULL,
     description VARCHAR(255),
     -- BELONGS TO USER
