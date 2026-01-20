@@ -1,5 +1,6 @@
 # Use existing image as base
-FROM eclipse-temurin:25-jre-alpine
+#FROM eclipse-temurin:25-jre-alpine does not use glibc, should avoid
+FROM eclipse-temurin:25-jre
 
 WORKDIR /opt/myApp
 
