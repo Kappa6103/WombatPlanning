@@ -39,11 +39,19 @@ entity Typology {
     -name : String
 }
 
+entity TypologyPool {
+    -id : Long
+}
+
+User "1" -- "1" TypologyPool
+
+TypologyPool "1" -- "0..*" Typology
+
 
 /'
 many to one
 '/
-Typology "1" -- "1..*" ScheduledTask
+Typology "1..*" -- "1..*" ScheduledTask
 
 /'
 A User can exist without any client and have many client
