@@ -8,8 +8,6 @@ import lombok.Setter;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "weeks")

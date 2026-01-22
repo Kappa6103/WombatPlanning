@@ -3,13 +3,10 @@ package com.wombatplanning.models.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "interventions")
@@ -26,7 +23,7 @@ public class Intervention {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "chantier_id", nullable = false)
-    private Chantier chantier;
+    private Worksite worksite;
 
     @Column(nullable = false)
     private Integer year;
@@ -34,6 +31,13 @@ public class Intervention {
     @OneToMany(mappedBy = "intervention")
     private Set<ScheduledTask> scheduledTasks = new HashSet<>();
 
+    // GETTER
+    // MUTATOR
 
+    public void setWorksite(Worksite worksite) {
+        this.worksite = worksite;
+    }
+
+    // HELPER
 }
 

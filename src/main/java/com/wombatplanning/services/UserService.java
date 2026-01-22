@@ -10,8 +10,4 @@ class UserService {
 
     private final UserRepository userRepository;
 
-    private void test() {
-        userRepository.findAll().getFirst().getChantierSet();
-    }
-
 }

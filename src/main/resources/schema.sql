@@ -9,7 +9,7 @@ SET search_path TO wombat_planning;
 DROP TABLE IF EXISTS
     users,
     clients,
-    chantiers,
+    worksites,
     interventions,
     scheduled_tasks,
     weeks,
@@ -49,17 +49,17 @@ CREATE TABLE clients (
 CREATE INDEX IF NOT EXISTS idx_clients_user_id ON clients (user_id);
 
 -- =====================================================
--- Table: chantiers // to add : created_at, last_update
+-- Table: worksites // to add : created_at, last_update
 -- =====================================================
 
-CREATE TABLE chantiers (
-    chantier_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+CREATE TABLE worksites (
+    worksite_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
     client_id BIGINT NOT NULL,
     name VARCHAR(20) NOT NULL,
 
     -- BELONGS TO USER
-    CONSTRAINT fk_chantier_user
+    CONSTRAINT fk_worksite_user
         FOREIGN KEY (user_id)
             REFERENCES users (user_id)
             ON DELETE NO ACTION
@@ -67,15 +67,15 @@ CREATE TABLE chantiers (
     -- UNIQUENESS CONSTRAINT
     UNIQUE (user_id, name),
 
-    CONSTRAINT fk_chantier_client
+    CONSTRAINT fk_worksite_client
         FOREIGN KEY (client_id)
             REFERENCES clients (client_id)
             ON DELETE NO ACTION
             ON UPDATE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_chantiers_client_id ON chantiers (client_id);
-CREATE INDEX IF NOT EXISTS idx_chantiers_user_id ON chantiers (user_id);
+CREATE INDEX IF NOT EXISTS idx_worksites_client_id ON worksites (client_id);
+CREATE INDEX IF NOT EXISTS idx_worksites_user_id ON worksites (user_id);
 
 -- =====================================================
 -- Table: interventions // add created_at and last_updated
@@ -84,7 +84,7 @@ CREATE INDEX IF NOT EXISTS idx_chantiers_user_id ON chantiers (user_id);
 CREATE TABLE interventions (
     intervention_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    chantier_id BIGINT NOT NULL,
+    worksite_id BIGINT NOT NULL,
     year INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_intervention_user
@@ -93,14 +93,14 @@ CREATE TABLE interventions (
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
 
-    CONSTRAINT fk_intervention_chantier
-        FOREIGN KEY (chantier_id)
-            REFERENCES chantiers (chantier_id)
+    CONSTRAINT fk_intervention_worksite
+        FOREIGN KEY (worksite_id)
+            REFERENCES worksites (worksite_id)
             ON DELETE CASCADE
             ON UPDATE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_interventions_chantier_id ON interventions (chantier_id);
+CREATE INDEX IF NOT EXISTS idx_interventions_worksite_id ON interventions (worksite_id);
 CREATE INDEX IF NOT EXISTS idx_interventions_user_id ON interventions (user_id);
 CREATE INDEX IF NOT EXISTS idx_interventions_year ON interventions (year);
 

@@ -7,8 +7,6 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "scheduled_tasks")
