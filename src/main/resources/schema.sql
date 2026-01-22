@@ -13,7 +13,8 @@ DROP TABLE IF EXISTS
     interventions,
     scheduled_tasks,
     weeks,
-    typologies
+    typologies,
+    scheduled_task_typologies
 CASCADE
 ;
 
@@ -84,6 +85,7 @@ CREATE TABLE interventions (
     intervention_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
     chantier_id BIGINT NOT NULL,
+    year INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_intervention_user
         FOREIGN KEY (user_id)
@@ -100,6 +102,7 @@ CREATE TABLE interventions (
 
 CREATE INDEX IF NOT EXISTS idx_interventions_chantier_id ON interventions (chantier_id);
 CREATE INDEX IF NOT EXISTS idx_interventions_user_id ON interventions (user_id);
+CREATE INDEX IF NOT EXISTS idx_interventions_year ON interventions (year);
 
 -- =====================================================
 -- Table: weeks // maybe change PK ALWAYS to BY DEFAULT
@@ -110,18 +113,18 @@ CREATE TABLE weeks (
     user_id BIGINT NOT NULL,
     week_number INT NOT NULL,
     is_holiday BOOLEAN NOT NULL DEFAULT false,
-    year_number INT NOT NULL,
+    year INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_week_user
         FOREIGN KEY (user_id)
             REFERENCES users (user_id)
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
-    UNIQUE (user_id, week_number, year_number)
+    UNIQUE (user_id, week_number, year)
 );
 CREATE INDEX IF NOT EXISTS idx_weeks_user_id ON weeks (user_id);
 CREATE INDEX IF NOT EXISTS idx_weeks_week_number ON weeks (week_number);
-CREATE INDEX IF NOT EXISTS idx_weeks_year_number ON weeks (year_number);
+CREATE INDEX IF NOT EXISTS idx_weeks_year ON weeks (year);
 
 -- =====================================================
 -- Table: scheduled_tasks // no unique constraint
@@ -131,7 +134,6 @@ CREATE TABLE scheduled_tasks (
     user_id BIGINT NOT NULL,
     intervention_id BIGINT NOT NULL,
     week_id BIGINT NOT NULL,
-    typology_id BIGINT NOT NULL,
     description VARCHAR(255),
     -- BELONGS TO USER
     CONSTRAINT fk_scheduled_tasks_user
@@ -168,4 +170,23 @@ CREATE TABLE typologies (
             ON DELETE NO ACTION
             ON UPDATE CASCADE,
     UNIQUE (user_id, name)
+);
+
+-- =====================================================
+-- Table: link table typologies <-> scheduled_tasks
+-- =====================================================
+CREATE TABLE scheduled_task_typologies (
+    scheduled_task_id BIGINT NOT NULL,
+    typology_id BIGINT NOT NULL,
+    PRIMARY KEY (scheduled_task_id, typology_id),
+    CONSTRAINT fk_scheduled_task_link_table
+        FOREIGN KEY (scheduled_task_id)
+            REFERENCES scheduled_tasks (scheduled_task_id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+    CONSTRAINT fk_typology_link_table
+        FOREIGN KEY (typology_id)
+            REFERENCES typologies (typology_id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
 );

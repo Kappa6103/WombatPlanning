@@ -39,14 +39,6 @@ entity Typology {
     -name : String
 }
 
-entity TypologyPool {
-    -id : Long
-}
-
-User "1" -- "1" TypologyPool
-
-TypologyPool "1" -- "0..*" Typology
-
 
 /'
 many to one

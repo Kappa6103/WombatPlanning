@@ -23,7 +23,7 @@ public class Typology {
     @Column(nullable = false, unique = false, length = 20)
     private String name;
 
-    @OneToMany(mappedBy = "typology")
+    @ManyToMany(mappedBy = "typologySet", fetch = FetchType.LAZY)
     private Set<ScheduledTask> scheduledTaskSet = new HashSet<>();
 
 }

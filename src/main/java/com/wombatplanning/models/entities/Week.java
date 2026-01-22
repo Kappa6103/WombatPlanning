@@ -30,8 +30,8 @@ public class Week {
     @Column(name = "is_holiday", nullable = false)
     private Boolean isHoliday;
 
-    @Column(name = "year_number", nullable = false)
-    private Integer yearNumber;
+    @Column(name = "year", nullable = false)
+    private Integer year;
 
     @OneToMany(mappedBy = "week", fetch = FetchType.LAZY)
     private Set<ScheduledTask> scheduledTaskList = new TreeSet<>();

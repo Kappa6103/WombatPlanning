@@ -8,7 +8,7 @@ WORKDIR /opt/myApp
 COPY ./target/WombatPlanning-0.0.1-SNAPSHOT.jar WombatPlanning-0.0.1-SNAPSHOT.jar
 
 # Install a sweet file manager
-RUN apt-get update && apt-get install -y mc
+#RUN apt-get update && apt-get install -y mc
 
 # Specify a start-up command
 CMD ["java", "-jar", "WombatPlanning-0.0.1-SNAPSHOT.jar"]

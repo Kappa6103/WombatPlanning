@@ -1,19 +1,20 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  wombat_monolith_service:
+    image: wombat_monolith_img:latest
+    container_name: wombat_monolith_container
+    build: .
+    pull_policy: never
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      - spring.datasource.url=jdbc:postgresql://db:5432/postgres
-      - spring.datasource.username=postgres
-      - spring.datasource.password=postgres
+      - spring.datasource.username=${POSTGRES_USER}
+      - spring.datasource.password=${POSTGRES_PASSWORD}
   db:
-    image: postgres
+    image: postgres:18.1
+    container_name: wombat_postgres
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: wombat_postgres
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

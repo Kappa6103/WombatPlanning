@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -32,8 +34,12 @@ public class ScheduledTask {
     @JoinColumn(name = "week_id", nullable = false)
     private Week week;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "typology_id")
-    private Typology typology;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "scheduled_task_typologies",
+            joinColumns = @JoinColumn(name = "scheduled_task_id"),
+            inverseJoinColumns = @JoinColumn(name = "typology_id")
+    )
+    private Set<Typology> typologySet;
 
 }

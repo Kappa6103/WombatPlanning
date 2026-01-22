@@ -28,6 +28,9 @@ public class Intervention {
     @JoinColumn(name = "chantier_id", nullable = false)
     private Chantier chantier;
 
+    @Column(nullable = false)
+    private Integer year;
+
     @OneToMany(mappedBy = "intervention")
     private Set<ScheduledTask> scheduledTasks = new HashSet<>();
 
