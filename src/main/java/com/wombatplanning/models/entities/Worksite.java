@@ -1,18 +1,24 @@
 package com.wombatplanning.models.entities;
 
+import com.wombatplanning.models.constraints.ClientChecker;
 import com.wombatplanning.models.constraints.ColumnConstraints;
 import com.wombatplanning.models.constraints.ConstrainedStringChecker;
+import com.wombatplanning.models.constraints.UserChecker;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "worksites")
 public class Worksite {
+
+    // FIELDS
 
     @Id
     @Column(name = "worksite_id")
@@ -31,37 +37,45 @@ public class Worksite {
     private Client client;
 
     @OneToMany(mappedBy = "worksite")
-    private Set<Intervention> interventionHashSet = new HashSet<>();
+    private Set<Intervention> interventionSet = new HashSet<>();
 
-    // GETTER
+    // FACTORY
 
-    public Set<Intervention> getInterventions() {
-        return Collections.unmodifiableSet(interventionHashSet);
-    }
-
-    // MUTATOR
-
-    public static Worksite create(String name) {
+    public static Worksite create(User user, Client client, String name) {
         Worksite worksite = new Worksite();
+        worksite.setUser(user);
+        worksite.setClient(client);
         worksite.setName(name);
+        user.addWorksite(worksite);
+        client.addWorksite(worksite);
         return worksite;
     }
 
-    public void changeName(String name) {
-        this.setName(name);
+    // GETTERS
+
+    public Long getId() {
+        return this.id;
     }
 
-    public void addIntervention(Intervention intervention) {
-        interventionHashSet.add(intervention);
-        intervention.setWorksite(this);
+    public String getName() {
+        return this.name;
     }
 
-    public void removeIntervention(Intervention intervention) {
-        interventionHashSet.remove(intervention);
-        intervention.setWorksite(null);
+    public Set<Intervention> getInterventions() {
+        return Collections.unmodifiableSet(interventionSet);
     }
 
-    // HELPER
+    // MUTATORS
+
+    private void setUser(User user) {
+        UserChecker.requireValidUser(user);
+        this.user = user;
+    }
+
+    private void setClient(Client client) {
+        ClientChecker.requireValidClient(client);
+        this.client = client;
+    }
 
     private void setName(String name) {
         ConstrainedStringChecker. requireValidString(
@@ -70,6 +84,14 @@ public class Worksite {
                 "Worksite name"
         );
         this.name = name;
+    }
+
+    public void changeName(String name) {
+        this.setName(name);
+    }
+
+    public void addIntervention(Intervention intervention) {
+        interventionSet.add(intervention);
     }
 
 }

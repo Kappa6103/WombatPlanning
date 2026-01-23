@@ -112,8 +112,8 @@ CREATE TABLE weeks (
     week_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL,
     week_number INT NOT NULL,
-    is_holiday BOOLEAN NOT NULL DEFAULT false,
     year INT NOT NULL,
+    is_holiday BOOLEAN NOT NULL DEFAULT false,
     -- BELONGS TO USER
     CONSTRAINT fk_week_user
         FOREIGN KEY (user_id)

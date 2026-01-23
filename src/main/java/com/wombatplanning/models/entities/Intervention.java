@@ -1,16 +1,21 @@
 package com.wombatplanning.models.entities;
 
+import com.wombatplanning.models.constraints.UserChecker;
+import com.wombatplanning.models.constraints.WorksiteChecker;
+import com.wombatplanning.models.constraints.YearChecker;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "interventions")
 public class Intervention {
+
+    // FIELDS
 
     @Id
     @Column(name = "intervention_id")
@@ -31,13 +36,43 @@ public class Intervention {
     @OneToMany(mappedBy = "intervention")
     private Set<ScheduledTask> scheduledTasks = new HashSet<>();
 
-    // GETTER
-    // MUTATOR
+    // FACTORY
 
-    public void setWorksite(Worksite worksite) {
+    public Intervention create(User user, Worksite worksite, Integer year) {
+        Intervention intervention = new Intervention();
+        intervention.setUser(user);
+        intervention.setWorksite(worksite);
+        intervention.setYear(year);
+        user.addIntervention(intervention);
+        worksite.addIntervention(intervention);
+        return intervention;
+    }
+
+    // GETTERS
+
+    public Long getId() {
+        return this.id;
+    }
+
+    // MUTATORS
+
+    private void setUser(User user) {
+        UserChecker.requireValidUser(user);
+        this.user = user;
+    }
+
+    private void setWorksite(Worksite worksite) {
+        WorksiteChecker.requireValidWorksite(worksite);
         this.worksite = worksite;
     }
 
-    // HELPER
+    private void setYear(Integer year) {
+        YearChecker.requireValidYear(year);
+        this.year = year;
+    }
+
+    public void addScheduledTask(ScheduledTask scheduledTask) {
+        this.scheduledTasks.add(scheduledTask);
+    }
 }
 

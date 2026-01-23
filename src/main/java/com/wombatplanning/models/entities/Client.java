@@ -1,16 +1,21 @@
 package com.wombatplanning.models.entities;
 
+import com.wombatplanning.models.constraints.ColumnConstraints;
+import com.wombatplanning.models.constraints.ConstrainedStringChecker;
+import com.wombatplanning.models.constraints.UserChecker;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "clients")
 public class Client {
+
+    // FIELDS
 
     @Id
     @Column(name = "client_id")
@@ -21,10 +26,50 @@ public class Client {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = ColumnConstraints.CLIENT_NAME_FIELD_MAX_LENGTH)
     private String name;
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     private Set<Worksite> worksiteSet = new HashSet<>();
+
+    // FACTORY
+
+    public Client create(User user, String clientName) {
+        Client client = new Client();
+        client.setUser(user);
+        client.setName(clientName);
+        user.addClient(client);
+        return client;
+    }
+
+    // GETTERS
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    // MUTATORS
+
+    public void addWorksite(Worksite worksite) {
+        worksiteSet.add(worksite);
+    }
+
+    private void setName(String name) {
+        ConstrainedStringChecker.requireValidString(
+                name,
+                ColumnConstraints.CLIENT_NAME_FIELD_MAX_LENGTH,
+                "Client's name"
+        );
+        this.name = name;
+    }
+
+    private void setUser(User user) {
+        UserChecker.requireValidUser(user);
+        this.user = user;
+    }
 
 }

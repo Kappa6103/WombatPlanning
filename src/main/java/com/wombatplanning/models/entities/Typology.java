@@ -3,22 +3,30 @@ package com.wombatplanning.models.entities;
 import com.wombatplanning.models.constraints.ColumnConstraints;
 import com.wombatplanning.models.constraints.ConstrainedStringChecker;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "typologies")
 public class Typology {
+
+    // FIELDS
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
 
     @Id
     @Column(name = "typology_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, unique = false, length = ColumnConstraints.TYPOLOGY_NAME_FIELD_MAX_LENGTH)
     private String name;
@@ -26,14 +34,24 @@ public class Typology {
     @ManyToMany(mappedBy = "typologySet", fetch = FetchType.LAZY)
     private Set<ScheduledTask> scheduledTaskSet = new HashSet<>();
 
+    // FACTORY
+
     public static Typology create(String name) {
         Typology typology = new Typology();
         typology.setName(name);
         return typology;
     }
 
-    public void changeName(String name) {
-        this.setName(name);
+    // GETTERS
+
+    public Long getId() {
+        return this.id;
+    }
+
+    // MUTATORS
+
+    public void addScheduledTask(ScheduledTask scheduledTask) {
+        scheduledTaskSet.add(scheduledTask);
     }
 
     private void setName(String name) {
