@@ -13,7 +13,7 @@ import java.util.TreeSet;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "weeks")
-public class Week {
+public class Week implements Comparable<Week> {
 
     // FIELDS
 
@@ -56,6 +56,14 @@ public class Week {
         return this.id;
     }
 
+    public Integer getWeekNumber() {
+        return this.weekNumber;
+    }
+
+    public Integer getYear() {
+        return this.year;
+    }
+
     // MUTATORS
 
     private void setUser(User user) {
@@ -79,5 +87,10 @@ public class Week {
 
     public void addScheduledTask(ScheduledTask scheduledTask) {
         this.scheduledTaskTreeSet.add(scheduledTask);
+    }
+
+    @Override
+    public int compareTo(Week o) {
+        return Integer.compare(this.weekNumber, o.getWeekNumber());
     }
 }

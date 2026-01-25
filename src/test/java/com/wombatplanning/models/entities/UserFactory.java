@@ -6,7 +6,7 @@ public class UserFactory {
     private static final String email = "email";
     private static final String password = "password";
 
-    protected static User createUser() {
+    public static User createUser() {
         User user = User.create(
                 name,
                 email,

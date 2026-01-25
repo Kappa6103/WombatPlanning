@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -29,12 +30,12 @@ public class Client {
     @Column(nullable = false, length = ColumnConstraints.CLIENT_NAME_FIELD_MAX_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Worksite> worksiteSet = new HashSet<>();
 
     // FACTORY
 
-    public Client create(User user, String clientName) {
+    public static Client create(User user, String clientName) {
         Client client = new Client();
         client.setUser(user);
         client.setName(clientName);
@@ -50,6 +51,10 @@ public class Client {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getUserName() {
+        return this.user.getName();
     }
 
     // MUTATORS
@@ -72,4 +77,12 @@ public class Client {
         this.user = user;
     }
 
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", user=" + user +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
