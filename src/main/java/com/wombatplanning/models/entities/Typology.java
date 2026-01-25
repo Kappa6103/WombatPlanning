@@ -16,9 +16,6 @@ public class Typology {
 
     // FIELDS
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-
     @Id
     @Column(name = "typology_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

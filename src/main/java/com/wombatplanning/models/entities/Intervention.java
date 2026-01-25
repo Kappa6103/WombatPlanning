@@ -27,7 +27,7 @@ public class Intervention {
     private User user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "chantier_id", nullable = false)
+    @JoinColumn(name = "worksite_id", nullable = false)
     private Worksite worksite;
 
     @Column(nullable = false)
