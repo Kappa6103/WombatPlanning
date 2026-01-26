@@ -14,6 +14,8 @@ services:
   db:
     image: postgres:18.1
     container_name: wombat_postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: wombat_postgres
       POSTGRES_USER: ${POSTGRES_USER}
