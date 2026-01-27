@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="#" method="post" data-th-action="@{/item}" data-th-object="${item}" accept-charset="utf-8">
+    <p>
+        <label>Code : </label>
+        <input type="text" data-th-field="*{code}">
+    </p>
+    <p>
+        <label>Nom : </label>
+        <input type="text" data-th-field="*{name}">
+    </p>
+    <p><label>Quantité : </label><input type="number" data-th-field="*{quantity}"></p>
+    <button type="submit">Envoyer</button>
+</form>
+
+</body>
+</html>

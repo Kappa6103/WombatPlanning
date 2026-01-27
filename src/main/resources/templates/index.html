@@ -4,7 +4,9 @@
     <title>HELLO</title>
 </head>
 <body>
-<h1>hello</h1>
+
+<h2 th:text="'hello ' + ${username}"></h2>
+<input type="text" name="userName" value="James carrot" th:value="${user.name}">
 
 </body>
 </html>
