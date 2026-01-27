@@ -20,3 +20,10 @@ services:
       POSTGRES_DB: wombat_postgres
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8086:8080"
+    depends_on:
+      - db

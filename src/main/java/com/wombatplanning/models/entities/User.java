@@ -10,7 +10,7 @@ import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
+@Table(name = "users", schema = "wombat_planning")
 public class User {
 
     // FIELDS
