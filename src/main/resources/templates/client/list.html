@@ -15,10 +15,10 @@
     <tr>
         <th>NAME</th>
         <th>WORKSITES</th>
+        <th>ACTIONS</th>
     </tr>
-    <tr th:each="o : ${orders}" th:class="${oStat.odd}? 'odd'">
-        <td th:text="${#calendars.format(o.date,'dd/MMM/yyyy')}">13 jan 2011</td>
-        <td th:text="${o.customer.name}">Frederic Tomato</td>
+    <tr th:each="client : ${clientList}">
+        <td th:text="*{name}">Ville de Strasbourg</td>
         <td th:text="${#aggregates.sum(o.orderLines.{purchasePrice * amount})}">23.32</td>
         <td>
             <a href="details.html" th:href="@{/order/details(orderId=${o.id})}">view</a>

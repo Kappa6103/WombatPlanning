@@ -1,6 +1,7 @@
 package com.wombatplanning.services;
 
 import com.wombatplanning.models.entities.Client;
+import com.wombatplanning.models.entities.Worksite;
 import com.wombatplanning.repositories.ClientRepository;
 import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
@@ -11,8 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @NullMarked
@@ -22,14 +24,23 @@ public class ClientService {
     private final static Logger log = LoggerFactory.getLogger(ClientService.class);
     private final ClientRepository clientRepository;
     private final UserService userService;
+    private final WorksiteService worksiteService;
 
 
-    public Set<ClientDto> getClientSet(UserDetails userDetails) {
+    public List<ClientDto> getAllClients(UserDetails userDetails) {
         UserDto userDto = userService.getUserDto(userDetails);
-        List<Client> allByUserId = clientRepository.findAllByUserId(userDto.id());
-        //TODO MAP TO CLIENT DTO
-
+        List<Client> allClients = clientRepository.findAllByUserId(userDto.id());
+        List<Worksite> allWorksites = worksiteService.getAllWorksites(userDto);
+        List<ClientDto> clientDtoList = transferToDtos(userDto.id(), allClients);
+        Collections.sort(clientDtoList);
+        return List.copyOf(clientDtoList);
     }
 
-    private Set<ClientDto>
+    private List<ClientDto> transferToDtos(Long userId, List<Client> clientList) {
+        List<ClientDto> clientDtoList = new ArrayList<>(clientList.size());
+        clientList.forEach(
+                client -> clientDtoList.add(new ClientDto(client.getId(), userId, client.getName()))
+        );
+        return clientDtoList;
+    }
 }

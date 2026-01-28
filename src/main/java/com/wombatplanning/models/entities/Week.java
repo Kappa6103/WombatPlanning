@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 @Entity
@@ -36,7 +38,7 @@ public class Week implements Comparable<Week> {
     private boolean isHoliday;
 
     @OneToMany(mappedBy = "week", fetch = FetchType.LAZY)
-    private Set<ScheduledTask> scheduledTaskTreeSet = new TreeSet<>();
+    private NavigableSet<ScheduledTask> scheduledTaskTreeSet = new TreeSet<>();
 
     // FACTORY
 

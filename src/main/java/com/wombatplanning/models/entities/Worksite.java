@@ -36,6 +36,9 @@ public class Worksite {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @Column(name = "client_id", insertable = false, updatable = false)
+    private Long clientId;
+
     @OneToMany(mappedBy = "worksite")
     private Set<Intervention> interventionSet = new HashSet<>();
 
@@ -52,6 +55,10 @@ public class Worksite {
     }
 
     // GETTERS
+
+    public Long getClientId() {
+        return this.clientId;
+    }
 
     public Long getId() {
         return this.id;

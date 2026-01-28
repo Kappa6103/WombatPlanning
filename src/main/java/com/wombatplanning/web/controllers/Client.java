@@ -1,6 +1,7 @@
 package com.wombatplanning.web.controllers;
 
 import com.wombatplanning.services.ClientService;
+import com.wombatplanning.services.dto.ClientDto;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Set;
+import java.util.List;
 
 
 @NullMarked
@@ -24,9 +25,8 @@ public class Client {
 
     @GetMapping("/client/list")
     public String clientList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        clientService.getClientSet(userDetails);
-
-
+        List<ClientDto> clientList = clientService.getAllClients(userDetails);
+        model.addAttribute("clientList", clientList);
         return "client/list";
     }
 
