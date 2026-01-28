@@ -1,0 +1,34 @@
+package com.wombatplanning.web.controllers;
+
+import com.wombatplanning.services.ClientService;
+import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NullMarked;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Set;
+
+
+@NullMarked
+@Controller
+@RequiredArgsConstructor
+public class Client {
+
+    private final static Logger log = LoggerFactory.getLogger(Client.class);
+    private final ClientService clientService;
+
+    @GetMapping("/client/list")
+    public String clientList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        clientService.getClientSet(userDetails);
+
+
+        return "client/list";
+    }
+
+
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WP - Home</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/static/style.css}" />
+</head>
+
+<body>
+
+<div>
+    <img src="/static/images/icon.jpg" alt="planning logo" title="WBP logo"
+         th:src="@{/images/icon.jpg}" th:alt-title="#{logo}" style="width:220px;height:auto;"/>
+</div>
+
+<div th:object="${userDto}">
+    <p th:utext="#{home.welcome(*{name})}">Welcome to our planning Software, Sebastian!</p>
+    <p>Your id is <span th:text="*{id}">3</span></p>
+    <p>Your email is <span th:text="*{email}">coucou@gmail.com</span></p>
+</div>
+
+<p>Please select an option</p>
+<ol>
+    <li><a href="client/list.html" th:href="@{/client/list}">Client List</a></li>
+    <li><a href="order/list.html" th:href="@{/order/list}">Workplace List</a></li>
+    <li><a href="subscribe.html" th:href="@{/subscribe}">See planning</a></li>
+</ol>
+
+<p>Now you are looking at a <span th:text="'working web application'">template file</span>.</p>
+
+<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+
+</body>
+
+</html>
+

@@ -2,26 +2,23 @@ package com.wombatplanning.services;
 
 import com.wombatplanning.models.entities.User;
 import com.wombatplanning.repositories.UserRepository;
+import com.wombatplanning.services.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+
 
 @Service
 @NullMarked
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final static Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository repo;
@@ -33,33 +30,22 @@ public class UserService implements UserDetailsService {
         User user = User.create(name, email, password);
         weekService.createWeeksFor(user);
         return user;
-
     }
 
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info(passwordEncoder.encode("password"));
-        log.info("got a request for {}", username);
-        Optional<User> optionalUser = repo.findByEmail(username);
-
+    public UserDto getUserDto(UserDetails userDetails) throws UsernameNotFoundException {
+        log.info("got a request for {}", userDetails);
+        String email = userDetails.getUsername();
+        Optional<User> optionalUser = repo.findByEmail(email);
         if (optionalUser.isEmpty()) {
             log.info("couldn't find user in db");
-            throw new UsernameNotFoundException("No user found with username: " + username);
+            throw new UsernameNotFoundException("No user found with username: " + email);
         }
         User user = optionalUser.get();
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                getAuthorities()
-        );
+        UserDto userDto = new UserDto(user.getId(), user.getName(), user.getEmail());
+        log.info("returning the newly formed record {}", userDto);
+        return userDto;
     }
 
-    private static Set<GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("USER"));
-        return authorities;
-    }
 }
 
 

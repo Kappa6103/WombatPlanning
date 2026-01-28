@@ -3,11 +3,13 @@ package com.wombatplanning.services;
 import com.wombatplanning.models.entities.User;
 import com.wombatplanning.models.entities.Week;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
+@NullMarked
 @RequiredArgsConstructor
 public class WeekService {
 
