@@ -36,8 +36,9 @@ public class Worksite {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @Column(name = "client_id", insertable = false, updatable = false)
-    private Long clientId;
+        // DO THIS IF DB HIT
+//    @Column(name = "client_id", insertable = false, updatable = false)
+//    private Long clientId;
 
     @OneToMany(mappedBy = "worksite")
     private Set<Intervention> interventionSet = new HashSet<>();
@@ -56,8 +57,12 @@ public class Worksite {
 
     // GETTERS
 
+    // CHECK FOR DB HIT
     public Long getClientId() {
-        return this.clientId;
+        return this.client.getId();
+    }
+    public Long getUserId() {
+        return this.user.getId();
     }
 
     public Long getId() {

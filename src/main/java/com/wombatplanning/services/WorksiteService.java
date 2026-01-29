@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @NullMarked
@@ -21,16 +23,27 @@ public class WorksiteService {
     private final static Logger log = LoggerFactory.getLogger(WorksiteService.class);
     private final WorksiteRepository worksiteRepository;
 
-    public List<Worksite> getAllWorksites(UserDto userDto) {
+    public List<WorksiteDto> getAllWorksites(UserDto userDto) {
         List<Worksite> allWorksites = worksiteRepository.findAllByUserId(userDto.id());
-        List<WorksiteDto> worksiteDtos = transfertToDtos(userDto.id(), allWorksites);
-
+        List<WorksiteDto> worksiteDtos = transfertToDtos(allWorksites);
+        Collections.sort(worksiteDtos);
+        quickIntegrityCheck(userDto, worksiteDtos);
+        return List.copyOf(worksiteDtos);
     }
 
-    private List<WorksiteDto> transfertToDtos(Long userId, List<Worksite> worksiteList) {
+    private List<WorksiteDto> transfertToDtos(List<Worksite> worksiteList) {
         List<WorksiteDto> worksiteDtos = new ArrayList<>(worksiteList.size());
         worksiteList.forEach(
-                w -> worksiteDtos.add(new WorksiteDto(w.getId(), userId, w.getName(), w.getClientId())))
+                w -> worksiteDtos.add(new WorksiteDto(w.getId(), w.getUserId(), w.getName(), w.getClientId())))
         ;
+        return worksiteDtos;
+    }
+
+    private void quickIntegrityCheck(UserDto user, List<WorksiteDto> worksiteDtos) {
+        for (WorksiteDto w : worksiteDtos) {
+            if (!Objects.equals(w.userId(), user.id())) {
+                throw new RuntimeException("ERROR SANITY CHECK FAILED");
+            }
+        }
     }
 }

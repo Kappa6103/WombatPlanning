@@ -5,6 +5,7 @@ import com.wombatplanning.models.entities.Worksite;
 import com.wombatplanning.repositories.ClientRepository;
 import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
+import com.wombatplanning.services.dto.WorksiteDto;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -23,14 +24,10 @@ public class ClientService {
 
     private final static Logger log = LoggerFactory.getLogger(ClientService.class);
     private final ClientRepository clientRepository;
-    private final UserService userService;
-    private final WorksiteService worksiteService;
 
 
-    public List<ClientDto> getAllClients(UserDetails userDetails) {
-        UserDto userDto = userService.getUserDto(userDetails);
+    public List<ClientDto> getAllClients(UserDto userDto) {
         List<Client> allClients = clientRepository.findAllByUserId(userDto.id());
-        List<Worksite> allWorksites = worksiteService.getAllWorksites(userDto);
         List<ClientDto> clientDtoList = transferToDtos(userDto.id(), allClients);
         Collections.sort(clientDtoList);
         return List.copyOf(clientDtoList);
