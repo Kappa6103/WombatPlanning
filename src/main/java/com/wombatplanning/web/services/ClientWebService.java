@@ -17,7 +17,8 @@ public class ClientWebService {
 
     private final static Logger log = LoggerFactory.getLogger(ClientWebService.class);
 
-    public TreeMap<ClientDto, NavigableSet<WorksiteDto>> joinClientsAndWorksites(List<ClientDto> clientList, List<WorksiteDto> worksiteList) {
+    public TreeMap<ClientDto, NavigableSet<WorksiteDto>> joinClientsAndWorksites(
+            List<ClientDto> clientList, List<WorksiteDto> worksiteList) {
         TreeMap<ClientDto, NavigableSet<WorksiteDto>> treeMap = new TreeMap<>();
 
         Map<Long, NavigableSet<WorksiteDto>> map = new HashMap<>();

@@ -6,6 +6,7 @@ import com.wombatplanning.services.WorksiteService;
 import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.dto.WorksiteDto;
+import com.wombatplanning.services.exceptions.DuplicateClientException;
 import com.wombatplanning.web.services.ClientWebService;
 import com.wombatplanning.web.validation.Create;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class Client {
     @PostMapping("/client/create")
     public String clientValidate(@AuthenticationPrincipal UserDetails userDetails,
                                  @ModelAttribute("client") @Validated(Create.class) ClientDto clientDto,
-                                 BindingResult result, Model model) {
+                                 BindingResult result) {
         UserDto userDto = userService.getUserDto(userDetails);
         log.info("received a new client form {}", clientDto);
         if(clientDto.userId() == null || !Objects.equals(clientDto.userId(), userDto.id())) {
@@ -71,11 +72,16 @@ public class Client {
         }
         if(result.hasErrors()) {
             log.info("the form has errors");
-            model.addAttribute("client", clientDto);
             return "client/create";
         }
-        clientService.createClient(userDto, clientDto);
-        return "redirect:/client/list";
+
+        try {
+            clientService.createClient(userDto, clientDto);
+            return "redirect:/client/list";
+        } catch (DuplicateClientException dce) {
+            result.rejectValue("name", "client.name.duplicate", "Client name already exists");
+            return "client/create";
+        }
     }
 
 

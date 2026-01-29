@@ -1,33 +1,62 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="en">-->
+<!--<head>-->
+<!--    <title>WP - Client</title>-->
+<!--    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />-->
+<!--    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/static/style.css}" />-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Client Creation</h1>-->
+<!--<nav>-->
+<!--    <a href="/templates/client/list.html" th:href="@{/client/list}">List</a>-->
+<!--</nav>-->
+
+<!--<form action="#" method="post" data-th-action="@{/client/create}" data-th-object="${client}" accept-charset="utf-8">-->
+<!--    <input type="hidden" name="userId" th:field="*{userId}">-->
+<!--    <p>-->
+<!--        <label>Nom : </label>-->
+<!--        <input type="text" data-th-field="*{name}">-->
+<!--    </p>-->
+<!--    <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" class="text-danger"></p>-->
+<!--    <button type="submit">Envoyer</button>-->
+<!--</form>-->
+<!--<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>WP - Client</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/static/style.css}" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/style.css}" />
 </head>
 <body>
-<h1>Client Creation</h1>
-<nav>
-    <a href="/templates/client/list.html" th:href="@{/client/list}">List</a>
-</nav>
+<main class="app">
+    <header class="site-header">
+        <div>
+            <h1>Client Creation</h1>
+            <p class="meta">Add a new client and keep your workspace list clean.</p>
+        </div>
+    </header>
 
-<form action="#" method="post" data-th-action="@{/client/create}" data-th-object="${client}" accept-charset="utf-8">
-    <input type="hidden" name="userId" th:field="*{userId}">
-    <p>
-        <label>Nom : </label>
-        <input type="text" data-th-field="*{name}">
-    </p>
-    <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" class="text-danger"></p>
-    <button type="submit">Envoyer</button>
-</form>
+    <nav>
+        <a href="/templates/client/list.html" th:href="@{/client/list}">List</a>
+    </nav>
 
+    <section class="panel">
+        <form action="#" method="post" data-th-action="@{/client/create}" data-th-object="${client}" accept-charset="utf-8">
+            <input type="hidden" name="userId" th:field="*{userId}">
+            <div class="field">
+                <label for="client-name">Nom</label>
+                <input id="client-name" type="text" data-th-field="*{name}">
+                <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" class="text-danger"></p>
+            </div>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        </form>
+    </section>
 
-
-
-
-
-
-
-<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+    <div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+</main>
 </body>
 </html>

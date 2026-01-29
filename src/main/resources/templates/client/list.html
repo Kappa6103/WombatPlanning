@@ -3,7 +3,7 @@
 <head>
     <title>WP - Client</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/static/style.css}" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/style.css}" />
 </head>
 <body>
 <h1>Client list</h1>
@@ -26,7 +26,7 @@
         </td>
         <td>
             <form action="/client/1/update" th:action="@{/client/{id}/update(id=${entry.key.id})}" method="get" style="display: inline;">
-                <button type="submit">Edit</button>
+                <button class="btn btn-primary" type="submit">Edit</button>
             </form>
         </td>
     </tr>
