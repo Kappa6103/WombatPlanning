@@ -24,7 +24,7 @@ public class WorksiteService {
     private final WorksiteRepository worksiteRepository;
 
     public List<WorksiteDto> getAllWorksites(UserDto userDto) {
-        List<Worksite> allWorksites = worksiteRepository.findAllByUserId(userDto.id());
+        List<Worksite> allWorksites = worksiteRepository.findAllByUser_Id(userDto.id());
         List<WorksiteDto> worksiteDtos = transfertToDtos(allWorksites);
         Collections.sort(worksiteDtos);
         quickIntegrityCheck(userDto, worksiteDtos);

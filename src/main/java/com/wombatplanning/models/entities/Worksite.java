@@ -106,4 +106,16 @@ public class Worksite {
         interventionSet.add(intervention);
     }
 
+    // OVERRIDES
+
+
+    @Override
+    public String toString() {
+        return "Worksite{" +
+                "id=" + id +
+                ", user=" + user +
+                ", name='" + name + '\'' +
+                ", client=" + client +
+                '}';
+    }
 }

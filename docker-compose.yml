@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   adminer:
     image: adminer
-    container_name: adminer
+    container_name: adminer_wombat
     ports:
       - "8086:8080"
     depends_on:

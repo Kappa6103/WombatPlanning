@@ -17,11 +17,17 @@
         <th>WORKSITES</th>
         <th>ACTIONS</th>
     </tr>
-    <tr th:each="client : ${clientList}">
-        <td th:text="*{name}">Ville de Strasbourg</td>
-        <td th:text="${#aggregates.sum(o.orderLines.{purchasePrice * amount})}">23.32</td>
+    <tr th:each="entry : ${clientsAndWorksites}">
+        <td th:text="${entry.key.name}">Ville de Strasbourg</td>
         <td>
-            <a href="details.html" th:href="@{/order/details(orderId=${o.id})}">view</a>
+            <div th:each="w : ${entry.value}"
+                  th:text="${w.name}"
+            >VDS POLE SUD</div>
+        </td>
+        <td>
+            <form action="/client/1/update" th:action="@{/client/{id}/update(id=${entry.key.id})}" method="get" style="display: inline;">
+                <button type="submit">Edit</button>
+            </form>
         </td>
     </tr>
 </table>
@@ -30,6 +36,8 @@
 <p>
     <a href="/templates/home.html" th:href="@{/home}">Return to home</a>
 </p>
+
+<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
 
 </body>
 

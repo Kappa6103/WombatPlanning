@@ -4,6 +4,8 @@ import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.WorksiteDto;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,6 +15,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ClientWebService {
 
+    private final static Logger log = LoggerFactory.getLogger(ClientWebService.class);
+
     public TreeMap<ClientDto, NavigableSet<WorksiteDto>> joinClientsAndWorksites(List<ClientDto> clientList, List<WorksiteDto> worksiteList) {
         TreeMap<ClientDto, NavigableSet<WorksiteDto>> treeMap = new TreeMap<>();
 
@@ -21,7 +25,7 @@ public class ClientWebService {
         for (WorksiteDto w : worksiteList) {
             if (map.containsKey(w.clientId())) {
                 if (!map.get(w.clientId()).add(w)) {
-                    throw new RuntimeException("One worksite broke uniqueness");
+                    log.error("WORKSITE NOT UNIQUE {}", w);
                 }
             } else {
                 NavigableSet<WorksiteDto> nvSet = new TreeSet<>();
@@ -31,13 +35,15 @@ public class ClientWebService {
         }
 
         for (ClientDto c : clientList) {
+            log.info("clientdto c is {}", c);
             if (treeMap.containsKey(c)) {
-                throw new RuntimeException("One client broke uniqueness");
+                log.error("CLIENT NOT UNIQUE {}", c);
             } else {
-                treeMap.put(c, map.get(c.id()));
+                log.info("clientDto is put in map {}", c);
+                treeMap.put(c, map.getOrDefault(c.id(), Collections.emptyNavigableSet()));
             }
         }
-
+//        return Collections.unmodifiableNavigableMap(treeMap);
         return treeMap;
     }
 }

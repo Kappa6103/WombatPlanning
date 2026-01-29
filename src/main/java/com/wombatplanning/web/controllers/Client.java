@@ -7,6 +7,7 @@ import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.dto.WorksiteDto;
 import com.wombatplanning.web.services.ClientWebService;
+import com.wombatplanning.web.validation.Create;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -15,10 +16,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.TreeMap;
 
 
@@ -38,10 +44,38 @@ public class Client {
         UserDto userDto = userService.getUserDto(userDetails);
         List<ClientDto> clientList = clientService.getAllClients(userDto);
         List<WorksiteDto> worksiteList = worksiteService.getAllWorksites(userDto);
-        TreeMap<ClientDto, NavigableSet<WorksiteDto>> orderedClientsandWorksites = clientWebService
+        TreeMap<ClientDto, NavigableSet<WorksiteDto>> orderedClientsAndWorksites = clientWebService
                 .joinClientsAndWorksites(clientList, worksiteList);
-        model.addAttribute("clientList", orderedClientsandWorksites);
+        model.addAttribute("clientsAndWorksites", orderedClientsAndWorksites);
         return "client/list";
+    }
+
+    @GetMapping("/client/create")
+    public String clientForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        UserDto userDto = userService.getUserDto(userDetails);
+        ClientDto newClientDto = clientService.getNewClientDto(userDto);
+        log.info("sending a new client dto to the from {}", newClientDto);
+        model.addAttribute("client", newClientDto);
+        return "client/create";
+    }
+
+    @PostMapping("/client/create")
+    public String clientValidate(@AuthenticationPrincipal UserDetails userDetails,
+                                 @ModelAttribute("client") @Validated(Create.class) ClientDto clientDto,
+                                 BindingResult result, Model model) {
+        UserDto userDto = userService.getUserDto(userDetails);
+        log.info("received a new client form {}", clientDto);
+        if(clientDto.userId() == null || !Objects.equals(clientDto.userId(), userDto.id())) {
+            log.error("form submission corrupted clientdto.userId {} and userdto.id {} not equal", clientDto.userId(), userDto.id());
+            return "redirect:client/create";
+        }
+        if(result.hasErrors()) {
+            log.info("the form has errors");
+            model.addAttribute("client", clientDto);
+            return "client/create";
+        }
+        clientService.createClient(userDto, clientDto);
+        return "redirect:/client/list";
     }
 
 

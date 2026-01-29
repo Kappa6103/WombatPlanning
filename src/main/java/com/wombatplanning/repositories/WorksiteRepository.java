@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface WorksiteRepository extends JpaRepository<Worksite, Long> {
-    List<Worksite> findAllByUserId(Long id);
+    List<Worksite> findAllByUser_Id(Long id);
 }
