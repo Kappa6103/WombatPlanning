@@ -7,35 +7,31 @@
 </head>
 
 <body>
-<main class="app">
-    <header class="site-header">
-        <div class="brand">
-            <img src="/static/images/icon.jpg" alt="planning logo" title="WBP logo"
-                 th:src="@{/images/icon.jpg}" th:alt-title="#{logo}"/>
-        </div>
-        <div>
-            <h1>Wombat Planning</h1>
-            <p class="meta">Plan worksites, track clients, and keep schedules tidy.</p>
-        </div>
-    </header>
 
-    <section class="panel" th:object="${userDto}">
-        <h2 th:utext="#{home.welcome(*{name})}">Welcome to our planning Software, Sebastian!</h2>
-        <p>Your id is <span th:text="*{id}">3</span></p>
-        <p>Your email is <span th:text="*{email}">coucou@gmail.com</span></p>
-    </section>
+<div>
+    <img src="/static/images/icon.jpg" alt="planning logo" title="WBP logo"
+         th:src="@{/images/icon.jpg}" th:alt-title="#{logo}" style="width:220px;height:auto;"/>
+</div>
 
-    <p>Please select an option</p>
-    <ol>
-        <li><a href="client/list.html" th:href="@{/client/list}">Client List</a></li>
-        <li><a href="order/list.html" th:href="@{/order/list}">Workplace List</a></li>
-        <li><a href="subscribe.html" th:href="@{/subscribe}">See planning</a></li>
-    </ol>
+<div th:replace="~{fragments/navbar::navbar}"> Here is the navbar</div>
 
-    <p>Now you are looking at a <span th:text="'working web application'">template file</span>.</p>
+<div th:object="${userDto}">
+    <p th:utext="#{home.welcome(*{name})}">Welcome to our planning Software, Sebastian!</p>
+    <p>Your id is <span th:text="*{id}">3</span></p>
+    <p>Your email is <span th:text="*{email}">coucou@gmail.com</span></p>
+</div>
 
-    <div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
-</main>
+<p>Please select an option</p>
+<ol>
+    <li><a href="client/list.html" th:href="@{/client/list}">Client List</a></li>
+    <li><a href="order/list.html" th:href="@{/order/list}">Workplace List</a></li>
+    <li><a href="subscribe.html" th:href="@{/subscribe}">See planning</a></li>
+</ol>
+
+<p>Now you are looking at a <span th:text="'working web application'">template file</span>.</p>
+
+<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+
 </body>
 
 </html>

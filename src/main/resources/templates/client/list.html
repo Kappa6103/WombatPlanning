@@ -4,40 +4,52 @@
     <title>WP - Client</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/style.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
 </head>
 <body>
 <h1>Client list</h1>
-<nav>
-    <a href="/templates/client/list.html" th:href="@{/client/list}">List</a>
+<div th:replace="~{fragments/navbar::navbar}"> Here is the navbar</div>
+
+<div class="sidebar" style="width:15%">
+    <h3>Menu</h3>
     <a href="/templates/client/create.html" th:href="@{/client/create}">Create</a>
-</nav>
-<table>
+</div>
+
+<table style="margin-left:15%">
+    <thead>
     <tr>
         <th>NAME</th>
         <th>WORKSITES</th>
         <th>ACTIONS</th>
     </tr>
+    </thead>
+    <tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
     <tr th:each="entry : ${clientsAndWorksites}">
         <td th:text="${entry.key.name}">Ville de Strasbourg</td>
         <td>
             <div th:each="w : ${entry.value}"
-                  th:text="${w.name}"
+                 th:text="${w.name}"
             >VDS POLE SUD</div>
         </td>
         <td>
-            <form action="/client/1/update" th:action="@{/client/{id}/update(id=${entry.key.id})}" method="get" style="display: inline;">
-                <button class="btn btn-primary" type="submit">Edit</button>
+            <form action="/client/update/1" th:action="@{/client/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
+                <button type="submit">Edit</button>
             </form>
+            <button hx-delete="/contact/1" style="display: inline;">
+                Delete
+            </button>
         </td>
     </tr>
+
+    </tbody>
 </table>
 
 
 <p>
-    <a href="/templates/home.html" th:href="@{/home}">Return to home</a>
+    <a href="/home.html" th:href="@{/home}">Return to home</a>
 </p>
 
-<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+<div th:replace="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
 
 </body>
 

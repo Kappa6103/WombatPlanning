@@ -9,6 +9,7 @@ import com.wombatplanning.services.dto.WorksiteDto;
 import com.wombatplanning.services.exceptions.DuplicateClientException;
 import com.wombatplanning.web.services.ClientWebService;
 import com.wombatplanning.web.validation.Create;
+import com.wombatplanning.web.validation.Update;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -52,7 +54,7 @@ public class Client {
     }
 
     @GetMapping("/client/create")
-    public String clientForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String clientCreationForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         UserDto userDto = userService.getUserDto(userDetails);
         ClientDto newClientDto = clientService.getNewClientDto(userDto);
         log.info("sending a new client dto to the from {}", newClientDto);
@@ -61,7 +63,7 @@ public class Client {
     }
 
     @PostMapping("/client/create")
-    public String clientValidate(@AuthenticationPrincipal UserDetails userDetails,
+    public String clientCreationValidate(@AuthenticationPrincipal UserDetails userDetails,
                                  @ModelAttribute("client") @Validated(Create.class) ClientDto clientDto,
                                  BindingResult result) {
         UserDto userDto = userService.getUserDto(userDetails);
@@ -84,5 +86,19 @@ public class Client {
         }
     }
 
+    @GetMapping("/client/update/{id}")
+    public String clientUpdateForm(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, Model model) {
+        UserDto userDto = userService.getUserDto(userDetails);
+        ClientDto clientDto = clientService.getClientDtoByClientId(userDto, id);
+        model.addAttribute("client", clientDto);
+        return "client/update";
+    }
+
+    @PostMapping("/client/update")
+    public String clientUpdateValidate(@AuthenticationPrincipal UserDetails userDetails,
+                                       @ModelAttribute("client") @Validated(Update.class) ClientDto clientDto,
+                                       BindingResult result) {
+
+    }
 
 }

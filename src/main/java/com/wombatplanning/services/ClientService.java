@@ -2,12 +2,12 @@ package com.wombatplanning.services;
 
 import com.wombatplanning.models.entities.Client;
 import com.wombatplanning.models.entities.User;
-import com.wombatplanning.models.entities.Worksite;
 import com.wombatplanning.repositories.ClientRepository;
 import com.wombatplanning.repositories.UserRepository;
 import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.exceptions.DuplicateClientException;
+import com.wombatplanning.services.exceptions.UserIdMissMatchException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -16,10 +16,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @NullMarked
@@ -66,5 +63,20 @@ public class ClientService {
         }
         log.info("saving client{}", client);
         clientRepository.save(client);
+    }
+
+    public ClientDto getClientDtoByClientId(UserDto userDto, Long id) {
+        Optional<Client> clientOptional = clientRepository.findById(id);
+        if(clientOptional.isEmpty()) {
+            throw new IllegalArgumentException(String.format("No client with this id %d in DB", id));
+        }
+        final Client client = clientOptional.get();
+        if (!Objects.equals(userDto.id(), client.getUser().getId())) {
+            throw new UserIdMissMatchException(
+                    String.format("Missmatch: userDto id %d != client.user.id %d",userDto.id(), client.getUser().getId()));
+        }
+        ClientDto clientDto = new ClientDto(client.getId(), userDto.id(), client.getName());
+        log.info("returning new clientDto {}", clientDto);
+        return clientDto;
     }
 }

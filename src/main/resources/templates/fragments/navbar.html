@@ -1,0 +1,11 @@
+<nav th:fragment="navbar">
+    <form method="get" action="/templates/home.html" th:action="@{/home}">
+        <button type="submit">Home</button>
+    </form>
+    <form method="get" action="/templates/client/list.html" th:action="@{/client/list}">
+        <button type="submit">Clients</button>
+    </form>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</nav>

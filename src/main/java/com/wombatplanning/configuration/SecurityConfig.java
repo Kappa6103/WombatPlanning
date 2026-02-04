@@ -22,7 +22,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .formLogin(formLogin ->
+                        formLogin.defaultSuccessUrl("/home", true));
         return http.build();
     }
 

@@ -1,0 +1,1 @@
+client name ordering should ignore cases

@@ -43,6 +43,9 @@ public class Client {
     }
 
     // GETTERS
+    public User getUser() {
+        return this.user;
+    }
 
     public Long getId() {
         return this.id;
