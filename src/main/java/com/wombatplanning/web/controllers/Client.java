@@ -44,9 +44,9 @@ public class Client {
 
     @GetMapping("/client/list")
     public String clientList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        UserDto userDto = userService.getUserDto(userDetails);
-        List<ClientDto> clientList = clientService.getAllClients(userDto);
-        List<WorksiteDto> worksiteList = worksiteService.getAllWorksites(userDto);
+        final UserDto userDto = userService.getUserDto(userDetails);
+        final List<ClientDto> clientList = clientService.getAllClients(userDto);
+        final List<WorksiteDto> worksiteList = worksiteService.getAllWorksites(userDto);
         TreeMap<ClientDto, NavigableSet<WorksiteDto>> orderedClientsAndWorksites = clientWebService
                 .joinClientsAndWorksites(clientList, worksiteList);
         model.addAttribute("clientsAndWorksites", orderedClientsAndWorksites);
@@ -55,8 +55,8 @@ public class Client {
 
     @GetMapping("/client/create")
     public String clientCreationForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        UserDto userDto = userService.getUserDto(userDetails);
-        ClientDto newClientDto = clientService.getNewClientDto(userDto);
+        final UserDto userDto = userService.getUserDto(userDetails);
+        final ClientDto newClientDto = clientService.getNewClientDto(userDto);
         log.info("sending a new client dto to the from {}", newClientDto);
         model.addAttribute("client", newClientDto);
         return "client/create";
@@ -66,14 +66,14 @@ public class Client {
     public String clientCreationValidate(@AuthenticationPrincipal UserDetails userDetails,
                                  @ModelAttribute("client") @Validated(Create.class) ClientDto clientDto,
                                  BindingResult result) {
-        UserDto userDto = userService.getUserDto(userDetails);
+        final UserDto userDto = userService.getUserDto(userDetails);
         log.info("received a new client form {}", clientDto);
         if(clientDto.userId() == null || !Objects.equals(clientDto.userId(), userDto.id())) {
             log.error("form submission corrupted clientdto.userId {} and userdto.id {} not equal", clientDto.userId(), userDto.id());
-            return "redirect:client/create";
+            return "redirect:/client/create";
         }
         if(result.hasErrors()) {
-            log.info("the form has errors");
+            log.info("the client creation form has errors");
             return "client/create";
         }
 
@@ -88,8 +88,8 @@ public class Client {
 
     @GetMapping("/client/update/{id}")
     public String clientUpdateForm(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, Model model) {
-        UserDto userDto = userService.getUserDto(userDetails);
-        ClientDto clientDto = clientService.getClientDtoByClientId(userDto, id);
+        final UserDto userDto = userService.getUserDto(userDetails);
+        final ClientDto clientDto = clientService.getClientDtoByClientId(userDto, id);
         model.addAttribute("client", clientDto);
         return "client/update";
     }
@@ -98,6 +98,23 @@ public class Client {
     public String clientUpdateValidate(@AuthenticationPrincipal UserDetails userDetails,
                                        @ModelAttribute("client") @Validated(Update.class) ClientDto clientDto,
                                        BindingResult result) {
+        final UserDto userDto = userService.getUserDto(userDetails);
+        if (clientDto.userId() == null || !Objects.equals(clientDto.userId(), userDto.id())) {
+            log.error("form submission corrupted clientdto.userId {} and userdto.id {} not equal", clientDto.userId(), userDto.id());
+            return "redirect:/client/list";
+        }
+        if (result.hasErrors()) {
+            log.info("the client update form has errors");
+            return "client/update";
+        }
+
+        try {
+            clientService.updateClient(userDto, clientDto);
+            return "redirect:/client/list";
+        } catch (DuplicateClientException dce) {
+            result.rejectValue("name", "client.name.duplicate", "Client name already exists");
+            return "client/create";
+        }
 
     }
 

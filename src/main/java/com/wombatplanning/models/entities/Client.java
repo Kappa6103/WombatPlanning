@@ -64,6 +64,9 @@ public class Client {
     public void addWorksite(Worksite worksite) {
         worksiteSet.add(worksite);
     }
+    public void changeName(String newName) {
+        setName(newName);
+    }
 
     private void setName(String name) {
         ConstrainedStringChecker.requireValidString(

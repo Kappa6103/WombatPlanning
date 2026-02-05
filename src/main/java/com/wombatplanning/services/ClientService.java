@@ -29,14 +29,14 @@ public class ClientService {
 
 
     public List<ClientDto> getAllClients(UserDto userDto) {
-        List<Client> allClients = clientRepository.findAllByUserId(userDto.id());
-        List<ClientDto> clientDtoList = transferToDtos(userDto.id(), allClients);
+        final List<Client> allClients = clientRepository.findAllByUserId(userDto.id());
+        final List<ClientDto> clientDtoList = transferToDtos(userDto.id(), allClients);
         Collections.sort(clientDtoList);
         return List.copyOf(clientDtoList);
     }
 
     private List<ClientDto> transferToDtos(Long userId, List<Client> clientList) {
-        List<ClientDto> clientDtoList = new ArrayList<>(clientList.size());
+        final List<ClientDto> clientDtoList = new ArrayList<>(clientList.size());
         clientList.forEach(
                 client -> clientDtoList.add(new ClientDto(client.getId(), userId, client.getName()))
         );
@@ -49,24 +49,24 @@ public class ClientService {
     }
 
     public void createClient(UserDto userDto, ClientDto clientDto) {
-        Optional<User> optUser = userRepository.findById(userDto.id());
+        final Optional<User> optUser = userRepository.findById(userDto.id());
         if (optUser.isEmpty()) {
             log.info("couldn't find user in db");
             throw new UsernameNotFoundException(String.format("No user found with userDto: %s", userDto));
         }
-        User user = optUser.get();
+        final User user = optUser.get();
         final Client client = Client.create(user, clientDto.name());
-        Example<Client> example = Example.of(client);
+        final Example<Client> example = Example.of(client);
         if (clientRepository.exists(example)) {
             log.info("the Client already exist {}", client);
-            throw new DuplicateClientException(String.format("Client name already exists %s", userDto.name()));
+            throw new DuplicateClientException(String.format("Client name already exists %s", clientDto.name()));
         }
         log.info("saving client{}", client);
         clientRepository.save(client);
     }
 
     public ClientDto getClientDtoByClientId(UserDto userDto, Long id) {
-        Optional<Client> clientOptional = clientRepository.findById(id);
+        final Optional<Client> clientOptional = clientRepository.findById(id);
         if(clientOptional.isEmpty()) {
             throw new IllegalArgumentException(String.format("No client with this id %d in DB", id));
         }
@@ -75,8 +75,30 @@ public class ClientService {
             throw new UserIdMissMatchException(
                     String.format("Missmatch: userDto id %d != client.user.id %d",userDto.id(), client.getUser().getId()));
         }
-        ClientDto clientDto = new ClientDto(client.getId(), userDto.id(), client.getName());
+        final ClientDto clientDto = new ClientDto(client.getId(), userDto.id(), client.getName());
         log.info("returning new clientDto {}", clientDto);
         return clientDto;
+    }
+
+    public void updateClient(UserDto userDto, ClientDto clientDto) {
+        final Optional<User> optUser = userRepository.findById(userDto.id());
+        if (optUser.isEmpty()) {
+            log.info("couldn't find user in db");
+            throw new UsernameNotFoundException(String.format("No user found with userDto: %s", userDto));
+        }
+        final User user = optUser.get();
+        final Example<Client> example = Example.of(Client.create(user, clientDto.name()));
+        if (clientRepository.exists(example)) {
+            log.info("the name taken {}", clientDto.name());
+            throw new DuplicateClientException(String.format("Client name already exists %s", clientDto.name()));
+        }
+        final Optional<Client> optClient = clientRepository.findById(clientDto.id());
+        if (optClient.isEmpty()) {
+            throw new IllegalArgumentException(String.format("Client not found in DB with id %d", clientDto.id()));
+        }
+        final Client client = optClient.get();
+        client.changeName(clientDto.name());
+        log.info("saving client {}", client);
+        clientRepository.save(client);
     }
 }

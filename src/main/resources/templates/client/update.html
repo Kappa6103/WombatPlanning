@@ -11,6 +11,7 @@
 
 <form action="#" method="post" th:action="@{/client/update}" th:object="${client}" accept-charset="utf-8">
     <input type="hidden" name="userId" th:field="*{userId}">
+    <input type="hidden" th:field="*{id}">
     <p>
         <label>Nom : </label>
         <input type="text" th:field="*{name}">
