@@ -4,6 +4,6 @@ public record WorksiteDto(Long id, Long userId, String name, Long clientId) impl
 
     @Override
     public int compareTo(WorksiteDto o) {
-        return String.CASE_INSENSITIVE_ORDER.compare(this.name, o.name());
+        return this.name.compareTo(o.name());
     }
 }

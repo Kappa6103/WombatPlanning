@@ -7,7 +7,7 @@ import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.dto.WorksiteDto;
 import com.wombatplanning.services.exceptions.DuplicateClientException;
-import com.wombatplanning.web.services.ClientWebService;
+import com.wombatplanning.web.services.WebService;
 import com.wombatplanning.web.validation.Create;
 import com.wombatplanning.web.validation.Update;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +37,14 @@ public class Client {
     private final UserService userService;
     private final ClientService clientService;
     private final WorksiteService worksiteService;
-    private final ClientWebService clientWebService;
+    private final WebService webService;
 
     @GetMapping("/client/list")
     public String clientList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         final UserDto userDto = userService.getUserDto(userDetails);
         final List<ClientDto> clientList = clientService.getAllClients(userDto);
         final List<WorksiteDto> worksiteList = worksiteService.getAllWorksites(userDto);
-        TreeMap<ClientDto, NavigableSet<WorksiteDto>> orderedClientsAndWorksites = clientWebService
+        final TreeMap<ClientDto, NavigableSet<WorksiteDto>> orderedClientsAndWorksites = webService
                 .joinClientsAndWorksites(clientList, worksiteList);
         model.addAttribute("clientsAndWorksites", orderedClientsAndWorksites);
         return "client/list";

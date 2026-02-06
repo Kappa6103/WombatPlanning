@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Disabled
 @SpringBootTest
-class WombatPlanningApplicationTests {
+class ApplicationTests {
 
 	@Test
 	void contextLoads() {

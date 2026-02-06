@@ -27,7 +27,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
 
-
+    //TODO why sort here ? don't think it is useful, should be naturally sorted in a treeSet
     public List<ClientDto> getAllClients(UserDto userDto) {
         final List<Client> allClients = clientRepository.findAllByUserId(userDto.id());
         final List<ClientDto> clientDtoList = transferToDtos(userDto.id(), allClients);

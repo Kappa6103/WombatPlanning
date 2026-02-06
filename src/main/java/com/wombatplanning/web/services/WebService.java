@@ -1,6 +1,7 @@
 package com.wombatplanning.web.services;
 
 import com.wombatplanning.services.dto.ClientDto;
+import com.wombatplanning.services.dto.InterventionDto;
 import com.wombatplanning.services.dto.WorksiteDto;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -13,10 +14,11 @@ import java.util.*;
 @Service
 @NullMarked
 @RequiredArgsConstructor
-public class ClientWebService {
+public class WebService {
 
-    private final static Logger log = LoggerFactory.getLogger(ClientWebService.class);
+    private final static Logger log = LoggerFactory.getLogger(WebService.class);
 
+    //TODO  should return an immutable treeMap
     public TreeMap<ClientDto, NavigableSet<WorksiteDto>> joinClientsAndWorksites(
             List<ClientDto> clientList, List<WorksiteDto> worksiteList) {
         TreeMap<ClientDto, NavigableSet<WorksiteDto>> treeMap = new TreeMap<>();
@@ -44,7 +46,17 @@ public class ClientWebService {
                 treeMap.put(c, map.getOrDefault(c.id(), Collections.emptyNavigableSet()));
             }
         }
+
 //        return Collections.unmodifiableNavigableMap(treeMap);
         return treeMap;
     }
+
+
+    public TreeMap<WorksiteDto, NavigableSet<InterventionDto>> joinWorksitesAndInterventions(
+            List<WorksiteDto> worksiteList, List<InterventionDto> interventionList) {
+
+
+
+    }
+
 }

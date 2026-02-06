@@ -50,8 +50,8 @@ public class Worksite {
         worksite.setUser(user);
         worksite.setClient(client);
         worksite.setName(name);
-        user.addWorksite(worksite);
-        client.addWorksite(worksite);
+//        user.addWorksite(worksite);
+//        client.addWorksite(worksite);
         return worksite;
     }
 
@@ -77,7 +77,17 @@ public class Worksite {
         return Collections.unmodifiableSet(interventionSet);
     }
 
-    // MUTATORS
+    // PUBLIC MUTATORS
+
+    public void changeName(String name) {
+        this.setName(name);
+    }
+
+    public void addIntervention(Intervention intervention) {
+        interventionSet.add(intervention);
+    }
+
+    // PRIVATE MUTATORS
 
     private void setUser(User user) {
         UserChecker.requireValidUser(user);
@@ -96,14 +106,6 @@ public class Worksite {
                 "Worksite name"
         );
         this.name = name;
-    }
-
-    public void changeName(String name) {
-        this.setName(name);
-    }
-
-    public void addIntervention(Intervention intervention) {
-        interventionSet.add(intervention);
     }
 
     // OVERRIDES

@@ -5,6 +5,9 @@
     <form method="get" action="/templates/client/list.html" th:action="@{/client/list}">
         <button type="submit">Clients</button>
     </form>
+    <form method="get" th:action="@{/worksite/list}">
+        <button type="submit">Worksites</button>
+    </form>
     <form th:action="@{/logout}" method="post">
         <button type="submit">Logout</button>
     </form>

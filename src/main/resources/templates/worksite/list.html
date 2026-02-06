@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WP - Worksite</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/style.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+</head>
+<body>
+<h1>Worksite list</h1>
+<div th:replace="~{fragments/navbar::navbar}"> Here is the navbar</div>
+
+<div class="sidebar" style="width:15%">
+    <h3>Menu</h3>
+    <a th:href="@{/worksite/create}">Create</a>
+</div>
+
+<table style="margin-left:15%">
+    <thead>
+    <tr>
+        <th>NAME</th>
+        <th>INTERVENTIONS</th>
+        <th>ACTIONS</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="worksite : ${worksiteList}">
+        <td th:text="${worksite.name}">Ville de Strasbourg</td>
+        <td>
+            <div th:each="w : ${entry.value}"
+                 th:text="${w.name}"
+            >VDS POLE SUD</div>
+        </td>
+        <td>
+            <form action="/client/update/1" th:action="@{/client/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
+                <button type="submit">Edit</button>
+            </form>
+            <form th:action="@{/client/delete/{id}(id=${entry.key.id})}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this client?');">
+                <button type="submit">
+                    Delete
+                </button>
+            </form>
+
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+
+<p>
+    <a href="/home.html" th:href="@{/home}">Return to home</a>
+</p>
+
+<div th:replace="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+
+</body>
+
+</html>
+

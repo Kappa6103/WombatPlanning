@@ -38,13 +38,13 @@ public class Intervention {
 
     // FACTORY
 
-    public Intervention create(User user, Worksite worksite, Integer year) {
+    public static Intervention create(User user, Worksite worksite, Integer year) {
         Intervention intervention = new Intervention();
         intervention.setUser(user);
         intervention.setWorksite(worksite);
         intervention.setYear(year);
-        user.addIntervention(intervention);
-        worksite.addIntervention(intervention);
+//        user.addIntervention(intervention);
+//        worksite.addIntervention(intervention);
         return intervention;
     }
 
@@ -52,6 +52,16 @@ public class Intervention {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Long getWorksiteId() {
+        return this.worksite.getId();
+    }
+    public Long getUserId() {
+        return this.user.getId();
+    }
+    public Integer getYear() {
+        return this.year;
     }
 
     // MUTATORS
