@@ -21,9 +21,13 @@ public record ClientDto(
 
 ) implements Comparable <ClientDto> {
 
+    /*
+     * case sensitive : this.name.compareTo(o.name());
+     * case insensitive : String.CASE_INSENSITIVE_ORDER.compare(this.name, o.name());
+     */
     @Override
     public int compareTo(ClientDto o) {
         return this.name.compareTo(o.name());
     }
-// return String.CASE_INSENSITIVE_ORDER.compare(this.name, o.name());
+
 }

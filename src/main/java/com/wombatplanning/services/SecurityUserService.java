@@ -27,11 +27,11 @@ public class SecurityUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("got a request for {}", username);
+        log.debug("got a request for {}", username);
         Optional<User> optionalUser = repo.findByEmail(username);
 
         if (optionalUser.isEmpty()) {
-            log.info("couldn't find user in db");
+            log.warn("couldn't find user in db");
             throw new UsernameNotFoundException("No user found with username: " + username);
         }
         User user = optionalUser.get();

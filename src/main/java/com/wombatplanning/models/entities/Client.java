@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -38,7 +39,6 @@ public class Client {
         Client client = new Client();
         client.setUser(user);
         client.setName(clientName);
-        user.addClient(client);
         return client;
     }
 
@@ -59,7 +59,7 @@ public class Client {
         return this.user.getName();
     }
 
-    // MUTATORS
+    // PUBLIC MUTATORS
 
     public void addWorksite(Worksite worksite) {
         worksiteSet.add(worksite);
@@ -67,6 +67,8 @@ public class Client {
     public void changeName(String newName) {
         setName(newName);
     }
+
+    // PRIVATE MUTATORS
 
     private void setName(String name) {
         ConstrainedStringChecker.requireValidString(

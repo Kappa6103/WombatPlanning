@@ -7,7 +7,7 @@ import com.wombatplanning.repositories.UserRepository;
 import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.exceptions.DuplicateClientException;
-import com.wombatplanning.services.exceptions.UserIdMissMatchException;
+import com.wombatplanning.services.exceptions.UserIdMisMatchException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class ClientService {
             log.info("the Client already exist {}", client);
             throw new DuplicateClientException(String.format("Client name already exists %s", clientDto.name()));
         }
-        log.info("saving client{}", client);
+        log.info("saving created client {}", client);
         clientRepository.save(client);
     }
 
@@ -72,8 +72,8 @@ public class ClientService {
         }
         final Client client = clientOptional.get();
         if (!Objects.equals(userDto.id(), client.getUser().getId())) {
-            throw new UserIdMissMatchException(
-                    String.format("Missmatch: userDto id %d != client.user.id %d",userDto.id(), client.getUser().getId()));
+            throw new UserIdMisMatchException(
+                    String.format("Mismatch: userDto id %d != client.user.id %d",userDto.id(), client.getUser().getId()));
         }
         final ClientDto clientDto = new ClientDto(client.getId(), userDto.id(), client.getName());
         log.info("returning new clientDto {}", clientDto);
@@ -87,18 +87,43 @@ public class ClientService {
             throw new UsernameNotFoundException(String.format("No user found with userDto: %s", userDto));
         }
         final User user = optUser.get();
-        final Example<Client> example = Example.of(Client.create(user, clientDto.name()));
-        if (clientRepository.exists(example)) {
-            log.info("the name taken {}", clientDto.name());
-            throw new DuplicateClientException(String.format("Client name already exists %s", clientDto.name()));
-        }
+
         final Optional<Client> optClient = clientRepository.findById(clientDto.id());
         if (optClient.isEmpty()) {
             throw new IllegalArgumentException(String.format("Client not found in DB with id %d", clientDto.id()));
         }
         final Client client = optClient.get();
+
+        if (Objects.equals(client.getName(), clientDto.name())) {
+            log.info("name already exist for this user's client's");
+            return;
+        }
+
+        final Example<Client> exampleIsNameTaken = Example.of(Client.create(user, clientDto.name()));
+        if (clientRepository.exists(exampleIsNameTaken)) {
+            log.info("name already taken by the user for a client {}", clientDto.name());
+            throw new DuplicateClientException(String.format("Client name already exists %s", clientDto.name()));
+        }
+
         client.changeName(clientDto.name());
-        log.info("saving client {}", client);
+        log.info("saving updated client {}", client);
         clientRepository.save(client);
+    }
+
+    public void deleteClient(UserDto userDto, Long clientId) {
+        if (!clientRepository.existsById(clientId)) {
+            throw new IllegalArgumentException(String.format("Client not found in DB %d", clientId));
+        }
+        final Optional<Client> optClient = clientRepository.findById(clientId);
+        if (optClient.isEmpty()) {
+            throw new IllegalArgumentException(String.format("Client not found in DB with id %d", clientId));
+        }
+        final Client client = optClient.get();
+
+        if (!Objects.equals(userDto.id(), client.getUser().getId())) {
+            throw new UserIdMisMatchException(String.format("Mismatch when deleting client userDto.id %d != client.id %d", userDto.id(), client.getId()));
+        }
+
+        clientRepository.delete(client);
     }
 }

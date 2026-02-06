@@ -20,10 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NavigableSet;
@@ -98,6 +95,7 @@ public class Client {
     public String clientUpdateValidate(@AuthenticationPrincipal UserDetails userDetails,
                                        @ModelAttribute("client") @Validated(Update.class) ClientDto clientDto,
                                        BindingResult result) {
+        log.info("receiving clientDto {}", clientDto);
         final UserDto userDto = userService.getUserDto(userDetails);
         if (clientDto.userId() == null || !Objects.equals(clientDto.userId(), userDto.id())) {
             log.error("form submission corrupted clientdto.userId {} and userdto.id {} not equal", clientDto.userId(), userDto.id());
@@ -113,9 +111,15 @@ public class Client {
             return "redirect:/client/list";
         } catch (DuplicateClientException dce) {
             result.rejectValue("name", "client.name.duplicate", "Client name already exists");
-            return "client/create";
+            return "client/update";
         }
+    }
 
+    @PostMapping("/client/delete/{id}")
+    public String clientDelete(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+        final UserDto userDto = userService.getUserDto(userDetails);
+        clientService.deleteClient(userDto, id);
+        return "redirect:/client/list";
     }
 
 }
