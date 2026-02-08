@@ -1,5 +1,6 @@
 package com.wombatplanning.models.entities;
 
+import com.wombatplanning.models.constraints.OccurrenceChecker;
 import com.wombatplanning.models.constraints.UserChecker;
 import com.wombatplanning.models.constraints.WorksiteChecker;
 import com.wombatplanning.models.constraints.YearChecker;
@@ -33,16 +34,20 @@ public class Intervention {
     @Column(nullable = false)
     private Integer year;
 
+    @Column(nullable = false)
+    private Integer occurrence;
+
     @OneToMany(mappedBy = "intervention")
     private Set<ScheduledTask> scheduledTasks = new HashSet<>();
 
     // FACTORY
 
-    public static Intervention create(User user, Worksite worksite, Integer year) {
+    public static Intervention create(User user, Worksite worksite, Integer year, Integer occurrence) {
         Intervention intervention = new Intervention();
         intervention.setUser(user);
         intervention.setWorksite(worksite);
         intervention.setYear(year);
+        intervention.setOccurrence(occurrence);
 //        user.addIntervention(intervention);
 //        worksite.addIntervention(intervention);
         return intervention;
@@ -50,21 +55,28 @@ public class Intervention {
 
     // GETTERS
 
+    public Integer getOccurrenceNumber() {
+        return this.occurrence;
+    }
     public Long getId() {
         return this.id;
     }
-
-    public Long getWorksiteId() {
-        return this.worksite.getId();
+    public Worksite getWorksite() {
+        return this.worksite;
     }
-    public Long getUserId() {
-        return this.user.getId();
+    public User getUser() {
+        return this.user;
     }
     public Integer getYear() {
         return this.year;
     }
 
-    // MUTATORS
+    // PRIVATE MUTATORS
+
+    private void setOccurrence(Integer occurrence) {
+        OccurrenceChecker.requireValidOccurence(occurrence);
+        this.occurrence = occurrence;
+    }
 
     private void setUser(User user) {
         UserChecker.requireValidUser(user);

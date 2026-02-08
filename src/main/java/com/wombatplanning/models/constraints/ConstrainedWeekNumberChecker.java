@@ -6,12 +6,12 @@ public class ConstrainedWeekNumberChecker {
         if (week == null) {
             throw new IllegalArgumentException("Week cannot be null");
         }
-        if (ColumnConstraints.WEEK_BEGINNING > week || week > ColumnConstraints.WEEK_ENDING) {
+        if (ColumnConstraints.WEEK_MIN > week || week > ColumnConstraints.WEEK_MAX) {
             throw new IllegalArgumentException(
                     String.format(
                             "Week must be between %d and %d",
-                            ColumnConstraints.WEEK_BEGINNING,
-                            ColumnConstraints.WEEK_ENDING));
+                            ColumnConstraints.WEEK_MIN,
+                            ColumnConstraints.WEEK_MAX));
         }
     }
 }

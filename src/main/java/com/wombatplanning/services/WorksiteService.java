@@ -34,7 +34,7 @@ public class WorksiteService {
     private List<WorksiteDto> transfertToDtos(List<Worksite> worksiteList) {
         List<WorksiteDto> worksiteDtos = new ArrayList<>(worksiteList.size());
         worksiteList.forEach(
-                w -> worksiteDtos.add(new WorksiteDto(w.getId(), w.getUserId(), w.getName(), w.getClientId())))
+                w -> worksiteDtos.add(new WorksiteDto(w.getId(), w.getUser().getId(), w.getName(), w.getClient().getId())))
         ;
         return worksiteDtos;
     }

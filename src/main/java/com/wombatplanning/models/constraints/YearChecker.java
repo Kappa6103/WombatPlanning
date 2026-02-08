@@ -6,12 +6,11 @@ public class YearChecker {
         if (year == null) {
             throw new IllegalArgumentException("Year cannot be null");
         }
-        if (ColumnConstraints.YEAR_BEGINNING > year || year > ColumnConstraints.YEAR_ENDING) {
+        if (ColumnConstraints.YEAR_MIN > year || year > ColumnConstraints.YEAR_MAX) {
             throw new IllegalArgumentException(
-                    String.format(
-                            "Year must be between %d and %d",
-                            ColumnConstraints.YEAR_BEGINNING,
-                            ColumnConstraints.YEAR_ENDING));
+                    String.format("Year must be between %d and %d",
+                            ColumnConstraints.YEAR_MIN,
+                            ColumnConstraints.YEAR_MAX));
         }
     }
 }

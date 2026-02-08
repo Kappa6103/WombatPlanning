@@ -32,7 +32,8 @@ public class InterventionService {
     private List<InterventionDto> transferToDtos(List<Intervention> interventionList) {
         final List<InterventionDto> interventionDtos = new ArrayList<>(interventionList.size());
         interventionList.forEach(
-                i -> interventionDtos.add(new InterventionDto(i.getId(), i.getUserId(), i.getWorksiteId(), i.getYear()))
+                i -> interventionDtos.add(new InterventionDto(i.getId(), i.getUser().getId(), i.getWorksite().getId(),
+                        i.getYear(), i.getOccurrenceNumber()))
         );
         return interventionDtos;
     }

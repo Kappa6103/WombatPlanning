@@ -58,11 +58,12 @@ public class Worksite {
     // GETTERS
 
     // CHECK FOR DB HIT
-    public Long getClientId() {
-        return this.client.getId();
+    public User getUser() {
+        return this.user;
     }
-    public Long getUserId() {
-        return this.user.getId();
+
+    public Client getClient() {
+        return this.client;
     }
 
     public Long getId() {

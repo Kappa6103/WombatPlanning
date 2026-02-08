@@ -26,11 +26,11 @@
 
     <tbody>
     <tr th:each="worksite : ${worksiteList}">
-        <td th:text="${worksite.name}">Ville de Strasbourg</td>
+        <td th:text="${worksite.name}">VDS POLE SUD</td>
         <td>
             <div th:each="w : ${entry.value}"
                  th:text="${w.name}"
-            >VDS POLE SUD</div>
+            >INTERVENTION</div>
         </td>
         <td>
             <form action="/client/update/1" th:action="@{/client/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
@@ -44,7 +44,6 @@
 
         </td>
     </tr>
-
     </tbody>
 </table>
 

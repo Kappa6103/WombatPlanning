@@ -86,6 +86,7 @@ CREATE TABLE interventions (
     user_id BIGINT NOT NULL,
     worksite_id BIGINT NOT NULL,
     year INT NOT NULL,
+    occurrence INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_intervention_user
         FOREIGN KEY (user_id)
@@ -97,7 +98,10 @@ CREATE TABLE interventions (
         FOREIGN KEY (worksite_id)
             REFERENCES worksites (worksite_id)
             ON DELETE CASCADE
-            ON UPDATE CASCADE
+            ON UPDATE CASCADE,
+
+    -- UNIQUENESS CONSTRAINT
+    UNIQUE (worksite_id, occurrence)
 );
 
 CREATE INDEX IF NOT EXISTS idx_interventions_worksite_id ON interventions (worksite_id);
