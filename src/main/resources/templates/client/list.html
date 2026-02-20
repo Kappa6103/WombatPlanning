@@ -18,7 +18,7 @@
 <table style="margin-left:15%">
     <thead>
     <tr>
-        <th>NAME</th>
+        <th>NAME OF CLIENT</th>
         <th>WORKSITES</th>
         <th>ACTIONS</th>
     </tr>
@@ -27,11 +27,14 @@
     <tr th:each="entry : ${clientsAndWorksites}">
         <td th:text="${entry.key.name}">Ville de Strasbourg</td>
         <td>
-            <div th:each="w : ${entry.value}"
-                 th:text="${w.name}"
+            <div th:each="worksite : ${entry.value}"
+                 th:text="${worksite.name}"
             >VDS POLE SUD</div>
         </td>
         <td>
+            <form th:action="@{/worksite/create/{clientId}(clientId=${entry.key.id})}" method="get" style="display: inline;">
+                <button type="submit">Create Worksite</button>
+            </form>
             <form action="/client/update/1" th:action="@{/client/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
                 <button type="submit">Edit</button>
             </form>

@@ -25,11 +25,11 @@
     </thead>
 
     <tbody>
-    <tr th:each="worksite : ${worksiteList}">
-        <td th:text="${worksite.name}">VDS POLE SUD</td>
+    <tr th:each="entry : ${worksitesAndInterventions}">
+        <td th:text="${entry.key.name}">VDS POLE SUD</td>
         <td>
-            <div th:each="w : ${entry.value}"
-                 th:text="${w.name}"
+            <div th:each="intervention : ${entry.value}"
+                 th:text="${intervention.occurrence}"
             >INTERVENTION</div>
         </td>
         <td>
@@ -44,6 +44,7 @@
 
         </td>
     </tr>
+
     </tbody>
 </table>
 

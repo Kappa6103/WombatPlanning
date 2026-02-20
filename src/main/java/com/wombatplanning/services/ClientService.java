@@ -6,8 +6,10 @@ import com.wombatplanning.repositories.ClientRepository;
 import com.wombatplanning.repositories.UserRepository;
 import com.wombatplanning.services.dto.ClientDto;
 import com.wombatplanning.services.dto.UserDto;
+import com.wombatplanning.services.exceptions.ClientNotFoundException;
 import com.wombatplanning.services.exceptions.DuplicateClientException;
 import com.wombatplanning.services.exceptions.UserIdMisMatchException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -22,6 +24,8 @@ import java.util.*;
 @NullMarked
 @RequiredArgsConstructor
 public class ClientService {
+
+    //TODO refactor with the getUser() from userService
 
     private final static Logger log = LoggerFactory.getLogger(ClientService.class);
     private final ClientRepository clientRepository;
@@ -125,5 +129,14 @@ public class ClientService {
         }
 
         clientRepository.delete(client);
+    }
+
+    public Client getClient(Long clientId) {
+        final Optional<Client> optClient = clientRepository.findById(clientId);
+        if (optClient.isEmpty()) {
+            log.info("couldn't find client in db");
+            throw new ClientNotFoundException(String.format("No client found with this id %d", clientId));
+        }
+        return optClient.get();
     }
 }

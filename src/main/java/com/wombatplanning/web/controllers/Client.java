@@ -54,7 +54,7 @@ public class Client {
     public String clientCreationForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         final UserDto userDto = userService.getUserDto(userDetails);
         final ClientDto newClientDto = clientService.getNewClientDto(userDto);
-        log.info("sending a new client dto to the from {}", newClientDto);
+        log.info("sending a new client dto to the form {}", newClientDto);
         model.addAttribute("client", newClientDto);
         return "client/create";
     }
@@ -70,7 +70,7 @@ public class Client {
             return "redirect:/client/create";
         }
         if(result.hasErrors()) {
-            log.info("the client creation form has errors");
+            log.info("the client creation form has error(s)");
             return "client/create";
         }
 

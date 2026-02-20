@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WP - Worksite</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/style.css}" />
+</head>
+<body>
+<h1>Worksite Creation</h1>
+<div th:replace="~{fragments/navbar::navbar}"> Here is the navbar</div>
+
+<form action="#" method="post" data-th-action="@{/worksite/create}" data-th-object="${worksite}" accept-charset="utf-8">
+    <input type="hidden" name="userId" th:field="*{userId}">
+    <input type="hidden" name="clientId" th:field="*{clientId}">
+    <p>
+        <label>Nom : </label>
+        <input type="text" data-th-field="*{name}">
+    </p>
+    <p data-th-if="${#fields.hasErrors('name')}" data-th-errors="*{name}" class="text-danger"></p>
+    <button type="submit">Envoyer</button>
+</form>
+
+<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+</body>
+</html>
