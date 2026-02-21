@@ -10,12 +10,7 @@
 <h1>Worksite list</h1>
 <div th:replace="~{fragments/navbar::navbar}"> Here is the navbar</div>
 
-<div class="sidebar" style="width:15%">
-    <h3>Menu</h3>
-    <a th:href="@{/worksite/create}">Create</a>
-</div>
-
-<table style="margin-left:15%">
+<table>
     <thead>
     <tr>
         <th>NAME</th>
@@ -33,10 +28,10 @@
             >INTERVENTION</div>
         </td>
         <td>
-            <form action="/client/update/1" th:action="@{/client/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
+            <form th:action="@{/worksite/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
                 <button type="submit">Edit</button>
             </form>
-            <form th:action="@{/client/delete/{id}(id=${entry.key.id})}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this client?');">
+            <form th:action="@{/worksite/delete/{id}(id=${entry.key.id})}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this worksite?');">
                 <button type="submit">
                     Delete
                 </button>

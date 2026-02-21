@@ -9,7 +9,6 @@ import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.exceptions.ClientNotFoundException;
 import com.wombatplanning.services.exceptions.DuplicateClientException;
 import com.wombatplanning.services.exceptions.UserIdMisMatchException;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -69,7 +68,7 @@ public class ClientService {
         clientRepository.save(client);
     }
 
-    public ClientDto getClientDtoByClientId(UserDto userDto, Long id) {
+    public ClientDto getClientDtoById(UserDto userDto, Long id) {
         final Optional<Client> clientOptional = clientRepository.findById(id);
         if(clientOptional.isEmpty()) {
             throw new IllegalArgumentException(String.format("No client with this id %d in DB", id));
@@ -115,19 +114,11 @@ public class ClientService {
     }
 
     public void deleteClient(UserDto userDto, Long clientId) {
-        if (!clientRepository.existsById(clientId)) {
-            throw new IllegalArgumentException(String.format("Client not found in DB %d", clientId));
-        }
-        final Optional<Client> optClient = clientRepository.findById(clientId);
-        if (optClient.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Client not found in DB with id %d", clientId));
-        }
-        final Client client = optClient.get();
+        final Client client = getClient(clientId);
 
         if (!Objects.equals(userDto.id(), client.getUser().getId())) {
             throw new UserIdMisMatchException(String.format("Mismatch when deleting client userDto.id %d != client.id %d", userDto.id(), client.getId()));
         }
-
         clientRepository.delete(client);
     }
 

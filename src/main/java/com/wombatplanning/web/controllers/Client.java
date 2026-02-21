@@ -73,7 +73,6 @@ public class Client {
             log.info("the client creation form has error(s)");
             return "client/create";
         }
-
         try {
             clientService.createClient(userDto, clientDto);
             return "redirect:/client/list";
@@ -86,7 +85,7 @@ public class Client {
     @GetMapping("/client/update/{id}")
     public String clientUpdateForm(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, Model model) {
         final UserDto userDto = userService.getUserDto(userDetails);
-        final ClientDto clientDto = clientService.getClientDtoByClientId(userDto, id);
+        final ClientDto clientDto = clientService.getClientDtoById(userDto, id);
         model.addAttribute("client", clientDto);
         return "client/update";
     }
@@ -102,10 +101,9 @@ public class Client {
             return "redirect:/client/list";
         }
         if (result.hasErrors()) {
-            log.info("the client update form has errors");
+            log.info("the client update form has error(s)");
             return "client/update";
         }
-
         try {
             clientService.updateClient(userDto, clientDto);
             return "redirect:/client/list";

@@ -33,16 +33,16 @@ public class UserService {
     }
 
     public UserDto getUserDto(UserDetails userDetails) throws UsernameNotFoundException {
-        log.info("got a request for {}", userDetails);
+        log.debug("got a request for {}", userDetails);
         String email = userDetails.getUsername();
         Optional<User> optionalUser = repo.findByEmail(email);
         if (optionalUser.isEmpty()) {
-            log.info("couldn't find user in db");
+            log.warn("couldn't find user in db");
             throw new UsernameNotFoundException("No user found with username: " + email);
         }
         User user = optionalUser.get();
         UserDto userDto = new UserDto(user.getId(), user.getName(), user.getEmail());
-        log.info("returning the newly formed record {}", userDto);
+        log.debug("returning the newly formed record {}", userDto);
         return userDto;
     }
 

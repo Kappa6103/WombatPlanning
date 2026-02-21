@@ -7,6 +7,8 @@ import com.wombatplanning.repositories.WorksiteRepository;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.dto.WorksiteDto;
 import com.wombatplanning.services.exceptions.DuplicateWorksiteException;
+import com.wombatplanning.services.exceptions.UserIdMisMatchException;
+import com.wombatplanning.services.exceptions.WorksiteNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -15,10 +17,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @NullMarked
@@ -71,5 +70,56 @@ public class WorksiteService {
         }
         log.info("saving created worksite {}", worksite);
         worksiteRepository.save(worksite);
+    }
+
+    public WorksiteDto getWorksiteDtoById(UserDto userDto, Long id) {
+        final Optional<Worksite> optWorksite = worksiteRepository.findById(id);
+        if (optWorksite.isEmpty()) {
+            throw new IllegalArgumentException(String.format("No worksite with this id %d in DB", id));
+        }
+        final Worksite worksite = optWorksite.get();
+        if (!Objects.equals(userDto.id(), worksite.getUser().getId())) {
+            throw new UserIdMisMatchException(
+                    String.format("Mismatch: userDto id %d != worksite.user.id %d", userDto.id(), worksite.getUser().getId()));
+        }
+        final WorksiteDto worksiteDto = new WorksiteDto(worksite.getId(), worksite.getUser().getId(), worksite.getName(), worksite.getClient().getId());
+        log.info("returning new worksiteDto {}", worksiteDto);
+        return worksiteDto;
+    }
+
+    public void updateWorksite(UserDto userDto, WorksiteDto worksiteDto) {
+        final User user = userService.getUser(userDto);
+        final Client client = clientService.getClient(worksiteDto.clientId());
+
+        final Optional<Worksite> optWorksite = worksiteRepository.findById(worksiteDto.id());
+        if (optWorksite.isEmpty()) {
+            throw new IllegalArgumentException(String.format("Worksite not found in DB with id %d", worksiteDto.id()));
+        }
+        final Worksite worksite = optWorksite.get();
+
+        if (Objects.equals(worksiteDto.name(), worksite.getName())) {
+            log.info("name already exist for this user's worksite's");
+            return;
+        }
+
+        final ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("client");
+        final Example<Worksite> example = Example.of(Worksite.create(user, client, worksiteDto.name()));
+        if (worksiteRepository.exists(example)) {
+            log.info("name already taken by the user for a worksite {}", worksiteDto.name());
+            throw new DuplicateWorksiteException(String.format("Worksite name already exists %s", worksiteDto.name()));
+        }
+
+        worksite.changeName(worksiteDto.name());
+        log.info("saving updated worksite {}", worksite);
+        worksiteRepository.save(worksite);
+    }
+
+    public void deleteWorksite(UserDto userDto, Long id) {
+        Optional<Worksite> optWorksite = worksiteRepository.findById(id);
+        if (optWorksite.isEmpty()) {
+            throw new WorksiteNotFoundException(String.format("No worksite found with this id %d", id));
+        }
+        worksiteRepository.delete(optWorksite.get());
     }
 }

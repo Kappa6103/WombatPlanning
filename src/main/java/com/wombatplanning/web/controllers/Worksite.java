@@ -1,14 +1,15 @@
 package com.wombatplanning.web.controllers;
 
-import com.wombatplanning.models.entities.Intervention;
 import com.wombatplanning.services.InterventionService;
 import com.wombatplanning.services.UserService;
 import com.wombatplanning.services.WorksiteService;
 import com.wombatplanning.services.dto.InterventionDto;
 import com.wombatplanning.services.dto.UserDto;
 import com.wombatplanning.services.dto.WorksiteDto;
+import com.wombatplanning.services.exceptions.DuplicateWorksiteException;
 import com.wombatplanning.web.services.WebService;
 import com.wombatplanning.web.validation.Create;
+import com.wombatplanning.web.validation.Update;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class Worksite {
         final List<InterventionDto> interventionList = interventionService.getAllIntervention(userDto);
         final TreeMap<WorksiteDto, NavigableSet<InterventionDto>> orderedWorksitesAndInterventions = webService
                 .joinWorksitesAndInterventions(worksiteList, interventionList);
-        model.addAttribute("worksitesAndInterventions", worksiteList);
+        model.addAttribute("worksitesAndInterventions", orderedWorksitesAndInterventions);
         return "worksite/list";
     }
 
@@ -74,40 +75,50 @@ public class Worksite {
             log.info("the worksite creation form has error(s)");
             return "worksite/create";
         }
-        worksiteService.createWorksite(userDto, worksiteDto);
-
+        try {
+            worksiteService.createWorksite(userDto, worksiteDto);
+            return "redirect:/worksite/list";
+        } catch (DuplicateWorksiteException dwe) {
+            result.rejectValue("name", "worksite.name.duplicate", "Worksite name already exists");
+            return "worksite/create";
+        }
     }
 
+    @GetMapping("/worksite/update/{id}")
+    public String worksiteUpdateForm(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id, Model model) {
+        final UserDto userDto = userService.getUserDto(userDetails);
+        final WorksiteDto worksiteDto = worksiteService.getWorksiteDtoById(userDto, id);
+        model.addAttribute("worksite", worksiteDto);
+        return "worksite/update";
+    }
 
+    @PostMapping("/worksite/update")
+    public String worksiteUpdateValidate(@AuthenticationPrincipal UserDetails userDetails,
+                                         @ModelAttribute("worksite") @Validated(Update.class) WorksiteDto worksiteDto,
+                                         BindingResult result) {
+        log.info("receiving worksiteDto {}", worksiteDto);
+        final UserDto userDto = userService.getUserDto(userDetails);
+        if (worksiteDto.userId() == null || !Objects.equals(worksiteDto.userId(), userDto.id())) {
+            log.error("form submission corrupted worksite.userId {} and userdto.id {} not equal", worksiteDto.userId(), userDto.id());
+            return "redirect:/worksite/list";
+        }
+        if (result.hasErrors()) {
+            log.info("the worksite update form has error(s)");
+            return "worksite/update";
+        }
+        try {
+            worksiteService.updateWorksite(userDto, worksiteDto);
+            return "redirect:/worksite/list";
+        } catch (DuplicateWorksiteException dwe) {
+            result.rejectValue("name", "worksite.name.duplicate", "Worksite name already exists");
+            return "worksite/update";
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @PostMapping("/worksite/delete/{id}")
+    public String worksiteDelete(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+        final UserDto userDto = userService.getUserDto(userDetails);
+        worksiteService.deleteWorksite(userDto, id);
+        return "redirect:/worksite/list";
+    }
 }
