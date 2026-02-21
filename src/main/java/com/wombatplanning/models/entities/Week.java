@@ -48,7 +48,7 @@ public class Week implements Comparable<Week> {
         week.setWeekNumber(weekNumber);
         week.setYear(year);
         week.setIsHoliday(false);
-        user.addWeek(week);
+        //user.addWeek(week);
         return week;
     }
 

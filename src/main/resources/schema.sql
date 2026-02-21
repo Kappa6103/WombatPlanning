@@ -87,6 +87,11 @@ CREATE TABLE interventions (
     worksite_id BIGINT NOT NULL,
     year INT NOT NULL,
     occurrence INT NOT NULL,
+    occurrence_done INT NOT NULL,
+    occurrence_remaining INT NOT NULL,
+    occurrence_skipped INT NOT NULL,
+    starting_week INT NOT NULL,
+    ending_week INT NOT NULL,
     -- BELONGS TO USER
     CONSTRAINT fk_intervention_user
         FOREIGN KEY (user_id)

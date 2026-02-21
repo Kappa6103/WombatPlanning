@@ -2,7 +2,7 @@ package com.wombatplanning.models.constraints;
 
 public class OccurrenceChecker {
 
-    public static void requireValidOccurence(Integer occurrence) {
+    public static void requireValidOccurrence(Integer occurrence) {
         if (occurrence == null) {
             throw new IllegalArgumentException("occurrence cannot be null");
         }
@@ -12,8 +12,6 @@ public class OccurrenceChecker {
                             ColumnConstraints.OCCURRENCE_MIN,
                             ColumnConstraints.OCCURRENCE_MAX));
         }
-
-
     }
 
 }

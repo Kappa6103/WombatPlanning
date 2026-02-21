@@ -104,7 +104,7 @@ public class WorksiteService {
 
         final ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnorePaths("client");
-        final Example<Worksite> example = Example.of(Worksite.create(user, client, worksiteDto.name()));
+        final Example<Worksite> example = Example.of(Worksite.create(user, client, worksiteDto.name()), matcher);
         if (worksiteRepository.exists(example)) {
             log.info("name already taken by the user for a worksite {}", worksiteDto.name());
             throw new DuplicateWorksiteException(String.format("Worksite name already exists %s", worksiteDto.name()));
@@ -116,10 +116,14 @@ public class WorksiteService {
     }
 
     public void deleteWorksite(UserDto userDto, Long id) {
-        Optional<Worksite> optWorksite = worksiteRepository.findById(id);
+        final Optional<Worksite> optWorksite = worksiteRepository.findById(id);
         if (optWorksite.isEmpty()) {
             throw new WorksiteNotFoundException(String.format("No worksite found with this id %d", id));
         }
-        worksiteRepository.delete(optWorksite.get());
+        final Worksite worksite = optWorksite.get();
+        if (!Objects.equals(userDto.id(), worksite.getUser().getId())) {
+            throw new UserIdMisMatchException(String.format("Mismatch when deleting worksite userDto.id %d != worksite.id %d", userDto.id(), worksite.getUser().getId()));
+        }
+        worksiteRepository.delete(worksite);
     }
 }
