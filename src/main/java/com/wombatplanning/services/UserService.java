@@ -54,6 +54,14 @@ public class UserService {
         }
         return optUser.get();
     }
+    public User getUser(Long id) {
+        final Optional<User> optUser = repo.findById(id);
+        if (optUser.isEmpty()) {
+            log.info("couldn't find user in db");
+            throw new UsernameNotFoundException(String.format("No user found with id: %s", id));
+        }
+        return optUser.get();
+    }
 }
 
 

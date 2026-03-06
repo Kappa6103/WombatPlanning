@@ -116,14 +116,23 @@ public class WorksiteService {
     }
 
     public void deleteWorksite(UserDto userDto, Long id) {
-        final Optional<Worksite> optWorksite = worksiteRepository.findById(id);
-        if (optWorksite.isEmpty()) {
-            throw new WorksiteNotFoundException(String.format("No worksite found with this id %d", id));
-        }
-        final Worksite worksite = optWorksite.get();
+        final Worksite worksite = getWorksite(id);
         if (!Objects.equals(userDto.id(), worksite.getUser().getId())) {
             throw new UserIdMisMatchException(String.format("Mismatch when deleting worksite userDto.id %d != worksite.id %d", userDto.id(), worksite.getUser().getId()));
         }
         worksiteRepository.delete(worksite);
+    }
+
+    public boolean hasWorksiteScheduledInterventions(Long worksiteId) {
+        Worksite worksite = getWorksite(worksiteId);
+        return !worksite.getInterventions().isEmpty();
+    }
+
+    Worksite getWorksite(Long id) {
+        final Optional<Worksite> optWorksite = worksiteRepository.findById(id);
+        if (optWorksite.isEmpty()) {
+            throw new WorksiteNotFoundException(String.format("No worksite found with this id %d", id));
+        }
+        return optWorksite.get();
     }
 }

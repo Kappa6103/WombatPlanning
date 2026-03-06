@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>WP - Intervention</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/style.css" th:href="@{/style.css}" />
+</head>
+<body>
+<h1>Intervention Creation</h1>
+<div th:replace="~{fragments/navbar::navbar}"> Here is the navbar</div>
+
+<form method="post" data-th-action="@{/intervention/create}" data-th-object="${scheduleCreation}" accept-charset="utf-8">
+    <input type="hidden" name="userId" th:field="*{userId}">
+    <input type="hidden" name="worksiteId" th:field="*{worksiteId}">
+
+    <!-- Year -->
+    <p>
+        <label for="year">Year:</label>
+        <input id="year" type="number" th:field="*{year}" min="2025" max="2100" required>
+    </p>
+    <p data-th-if="${#fields.hasErrors('year')}" data-th-errors="*{year}" class="text-danger"></p>
+
+    <!-- Occurrences -->
+    <p>
+        <label for="occurrenceRemaining">Occurrences remaining:</label>
+        <input id="occurrenceRemaining" type="number" th:field="*{occurrenceRemaining}" min="0" required>
+    </p>
+    <p data-th-if="${#fields.hasErrors('occurrenceRemaining')}" data-th-errors="*{occurrenceRemaining}" class="text-danger"></p>
+
+    <!-- Weeks -->
+    <p>
+        <label for="startingWeek">Starting week:</label>
+        <input id="startingWeek" type="number" th:field="*{startingWeek}" min="1" max="53" required>
+    </p>
+    <p data-th-if="${#fields.hasErrors('startingWeek')}" data-th-errors="*{startingWeek}" class="text-danger"></p>
+
+    <p>
+        <label for="endingWeek">Ending week:</label>
+        <input id="endingWeek" type="number" th:field="*{endingWeek}" min="1" max="53" required>
+    </p>
+    <p data-th-if="${#fields.hasErrors('endingWeek')}" data-th-errors="*{endingWeek}" class="text-danger"></p>
+
+    <button type="submit">Envoyer</button>
+</form>
+
+<div th:insert="~{fragments/footer::copy}">&copy; 2011 The Static Templates</div>
+</body>
+</html>

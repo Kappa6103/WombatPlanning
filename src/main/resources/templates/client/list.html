@@ -12,7 +12,10 @@
 
 <div class="sidebar" style="width:15%">
     <h3>Menu</h3>
-    <a href="/templates/client/create.html" th:href="@{/client/create}">Create</a>
+<!--    <a href="/templates/client/create.html" th:href="@{/client/create}">Create</a>-->
+    <form th:action="@{/client/create}" method="get">
+        <button type="submit">Create</button>
+    </form>
 </div>
 
 <table style="margin-left:15%">

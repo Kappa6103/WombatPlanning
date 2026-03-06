@@ -86,7 +86,6 @@ CREATE TABLE interventions (
     user_id BIGINT NOT NULL,
     worksite_id BIGINT NOT NULL,
     year INT NOT NULL,
-    occurrence INT NOT NULL,
     occurrence_done INT NOT NULL,
     occurrence_remaining INT NOT NULL,
     occurrence_skipped INT NOT NULL,
@@ -106,7 +105,7 @@ CREATE TABLE interventions (
             ON UPDATE CASCADE,
 
     -- UNIQUENESS CONSTRAINT
-    UNIQUE (worksite_id, occurrence)
+    UNIQUE (worksite_id, year)
 );
 
 CREATE INDEX IF NOT EXISTS idx_interventions_worksite_id ON interventions (worksite_id);

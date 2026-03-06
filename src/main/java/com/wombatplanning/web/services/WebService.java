@@ -1,9 +1,6 @@
 package com.wombatplanning.web.services;
 
-import com.wombatplanning.services.dto.ClientDto;
-import com.wombatplanning.services.dto.Identifiable;
-import com.wombatplanning.services.dto.InterventionDto;
-import com.wombatplanning.services.dto.WorksiteDto;
+import com.wombatplanning.services.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.slf4j.Logger;
@@ -52,20 +49,48 @@ public class WebService {
         return treeMap;
     }
 
+    public TreeMap<WorksiteDto, String> joinWorksitesAndScheduleInfo(
+            List<WorksiteDto> worksiteList, List<InterventionScheduleInfoDto> scheduleInfoDtoList) {
 
-    public TreeMap<WorksiteDto, NavigableSet<InterventionDto>> joinWorksitesAndInterventions(
-            List<WorksiteDto> worksiteList, List<InterventionDto> interventionList) {
-        TreeMap<WorksiteDto, NavigableSet<InterventionDto>> treeMap = new TreeMap<>();
+        TreeMap<WorksiteDto, String> treeMap = new TreeMap<>();
 
-        Map<Long, NavigableSet<InterventionDto>> map = new HashMap<>();
+        Map<Long, InterventionScheduleInfoDto> map = new HashMap<>();
+
+        for (InterventionScheduleInfoDto infoDto : scheduleInfoDtoList) {
+            Long worksiteId = infoDto.worksiteId();
+            if (map.containsKey(worksiteId)) {
+                log.error("shouldn't have more that one worksite per year");
+            } else {
+                map.put(worksiteId, infoDto);
+            }
+        }
+
+        for (WorksiteDto w : worksiteList) {
+           if (map.containsKey(w.id())) {
+               InterventionScheduleInfoDto infoDto = map.get(w.id());
+               treeMap.put(w, String.format("Occ. done: %d Occ. remaining: %d Occ. skipped: %d",
+                       infoDto.occurrenceDone(), infoDto.occurrenceRemaining(), infoDto.occurrenceSkipped()));
+           } else {
+               treeMap.put(w, "No intervention scheduled");
+           }
+        }
+        return treeMap;
+    }
+
+
+    public TreeMap<WorksiteDto, NavigableSet<InterventionScheduleCreationDto>> joinWorksitesAndInterventions(
+            List<WorksiteDto> worksiteList, List<InterventionScheduleCreationDto> interventionList) {
+        TreeMap<WorksiteDto, NavigableSet<InterventionScheduleCreationDto>> treeMap = new TreeMap<>();
+
+        Map<Long, NavigableSet<InterventionScheduleCreationDto>> map = new HashMap<>();
 
         //can be simplified with map.computeIfAbsent(worksiteId, k -> new TreeSet<>()).add(i);
-        for (InterventionDto i : interventionList) {
+        for (InterventionScheduleCreationDto i : interventionList) {
             Long worksiteId = i.worksiteId();
             if (map.containsKey(worksiteId)) {
                 map.get(worksiteId).add(i);
             } else {
-                NavigableSet<InterventionDto> nvSet = new TreeSet<>();
+                NavigableSet<InterventionScheduleCreationDto> nvSet = new TreeSet<>();
                 nvSet.add(i);
                 map.put(worksiteId,nvSet);
             }

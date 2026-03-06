@@ -4,7 +4,7 @@ public class OccurrenceChecker {
 
     public static void requireValidOccurrence(Integer occurrence) {
         if (occurrence == null) {
-            throw new IllegalArgumentException("occurrence cannot be null");
+            throw new IllegalArgumentException("occurrenceRemaining cannot be null");
         }
         if (ColumnConstraints.OCCURRENCE_MIN > occurrence || occurrence > ColumnConstraints.OCCURRENCE_MAX) {
             throw new IllegalArgumentException(

@@ -20,14 +20,14 @@
     </thead>
 
     <tbody>
-    <tr th:each="entry : ${worksitesAndInterventions}">
+    <tr th:each="entry : ${worksitesAndScheduleInfo}">
         <td th:text="${entry.key.name}">VDS POLE SUD</td>
+        <td th:text="${entry.value}"></td>
         <td>
-            <div th:each="intervention : ${entry.value}"
-                 th:text="${intervention.occurrence}"
-            >INTERVENTION</div>
-        </td>
-        <td>
+            <form th:if="${entry.value == 'No intervention scheduled'}"
+                    th:action="@{/intervention/create/{worksiteId}(worksiteId=${entry.key.id})}" method="get" style="display: inline;">
+                <button type="submit">Schedule interventions</button>
+            </form>
             <form th:action="@{/worksite/update/{id}(id=${entry.key.id})}" method="get" style="display: inline;">
                 <button type="submit">Edit</button>
             </form>

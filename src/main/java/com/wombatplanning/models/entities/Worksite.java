@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -41,7 +40,7 @@ public class Worksite {
 //    private Long clientId;
 
     @OneToMany(mappedBy = "worksite")
-    private Set<Intervention> interventionSet = new HashSet<>();
+    private Set<InterventionSchedule> interventionScheduleSet = new HashSet<>();
 
     // FACTORY
 
@@ -74,8 +73,8 @@ public class Worksite {
         return this.name;
     }
 
-    public Set<Intervention> getInterventions() {
-        return Collections.unmodifiableSet(interventionSet);
+    public Set<InterventionSchedule> getInterventions() {
+        return Collections.unmodifiableSet(interventionScheduleSet);
     }
 
     // PUBLIC MUTATORS
@@ -84,8 +83,8 @@ public class Worksite {
         this.setName(name);
     }
 
-    public void addIntervention(Intervention intervention) {
-        interventionSet.add(intervention);
+    public void addIntervention(InterventionSchedule interventionSchedule) {
+        interventionScheduleSet.add(interventionSchedule);
     }
 
     // PRIVATE MUTATORS

@@ -1,11 +1,11 @@
 package com.wombatplanning.models.constraints;
 
-import com.wombatplanning.models.entities.Intervention;
+import com.wombatplanning.models.entities.InterventionSchedule;
 
 public class InterventionChecker {
 
-    public static void requireValidIntervention(Intervention intervention) {
-        if (intervention == null) {
+    public static void requireValidIntervention(InterventionSchedule interventionSchedule) {
+        if (interventionSchedule == null) {
             throw new IllegalArgumentException("Intervention cannot be null");
         }
     }

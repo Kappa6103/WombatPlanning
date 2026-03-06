@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "interventions")
-public class Intervention { //TODO is name appropriate ? shouldn't be InterventionScheduler ? or Scheduler ?
+public class InterventionSchedule {
 
     // FIELDS
 
@@ -31,10 +31,6 @@ public class Intervention { //TODO is name appropriate ? shouldn't be Interventi
     @Column(nullable = false)
     private Integer year;
 
-    //TODO can i remove it ? kinda redundant.
-    @Column(nullable = false)
-    private Integer occurrence;
-
     @Column(name = "occurrence_done", nullable = false)
     private Integer occurrenceDone;
 
@@ -50,29 +46,26 @@ public class Intervention { //TODO is name appropriate ? shouldn't be Interventi
     @Column(name = "ending_week", nullable = false)
     private Integer endingWeek;
 
-    @OneToMany(mappedBy = "intervention")
+    @OneToMany(mappedBy = "interventionSchedule")
     private Set<ScheduledTask> scheduledTasks = new HashSet<>();
 
     // FACTORY
 
-    public static Intervention create(User user, Worksite worksite, Integer year, Integer occurrence, Integer startingWeek, Integer endingWeek) {
-        Intervention intervention = new Intervention();
-        intervention.setUser(user);
-        intervention.setWorksite(worksite);
-        intervention.setYear(year);
-        intervention.setOccurrence(occurrence);
-        intervention.setOccurrenceDone();
-        intervention.setOccurrenceSkipped();
-        intervention.setStartingWeek(startingWeek);
-        intervention.setEndingWeek(endingWeek);
-        return intervention;
+    public static InterventionSchedule create(User user, Worksite worksite, Integer year, Integer occurrenceRemaining, Integer startingWeek, Integer endingWeek) {
+        InterventionSchedule interventionSchedule = new InterventionSchedule();
+        interventionSchedule.setUser(user);
+        interventionSchedule.setWorksite(worksite);
+        interventionSchedule.setYear(year);
+        interventionSchedule.setOccurrenceRemaining(occurrenceRemaining);
+        interventionSchedule.setOccurrenceDone();
+        interventionSchedule.setOccurrenceSkipped();
+        interventionSchedule.setStartingWeek(startingWeek);
+        interventionSchedule.setEndingWeek(endingWeek);
+        return interventionSchedule;
     }
 
     // GETTERS
 
-    public Integer getOccurrenceNumber() {
-        return this.occurrence;
-    }
     public Long getId() {
         return this.id;
     }
@@ -84,6 +77,21 @@ public class Intervention { //TODO is name appropriate ? shouldn't be Interventi
     }
     public Integer getYear() {
         return this.year;
+    }
+    public Integer getOccurrenceDone() {
+        return occurrenceDone;
+    }
+    public Integer getOccurrenceRemaining() {
+        return occurrenceRemaining;
+    }
+    public Integer getOccurrenceSkipped() {
+        return occurrenceSkipped;
+    }
+    public Integer getStartingWeek() {
+        return startingWeek;
+    }
+    public Integer getEndingWeek() {
+        return endingWeek;
     }
 
     // PRIVATE MUTATORS
@@ -107,10 +115,9 @@ public class Intervention { //TODO is name appropriate ? shouldn't be Interventi
         this.occurrenceSkipped = 0;
     }
 
-    private void setOccurrence(Integer occurrence) {
-        OccurrenceChecker.requireValidOccurrence(occurrence);
-        this.occurrence = occurrence;
-        this.occurrenceRemaining = occurrence;
+    private void setOccurrenceRemaining(Integer occurrenceRemaining) {
+        OccurrenceChecker.requireValidOccurrence(occurrenceRemaining); //TODO TO RENAME ?
+        this.occurrenceRemaining = occurrenceRemaining;
     }
 
     private void setUser(User user) {

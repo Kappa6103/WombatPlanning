@@ -30,7 +30,7 @@ public class ScheduledTask {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "intervention_id", nullable = false)
-    private Intervention intervention;
+    private InterventionSchedule interventionSchedule;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "week_id", nullable = false)
@@ -68,7 +68,7 @@ public class ScheduledTask {
 
     private ScheduledTask(Builder builder) {
         this.user = builder.user;
-        this.intervention = builder.intervention;
+        this.interventionSchedule = builder.interventionSchedule;
         this.week = builder.week;
         this.description = builder.description;
         addTypologySet(builder.typologySet);
@@ -76,7 +76,7 @@ public class ScheduledTask {
 
     public static class Builder {
         private User user;
-        private Intervention intervention;
+        private InterventionSchedule interventionSchedule;
         private Week week;
         private String description;
         private Set<Typology> typologySet;
@@ -85,8 +85,8 @@ public class ScheduledTask {
             this.user = user;
             return this;
         }
-        public Builder intervention(Intervention intervention) {
-            this.intervention = intervention;
+        public Builder intervention(InterventionSchedule interventionSchedule) {
+            this.interventionSchedule = interventionSchedule;
             return this;
         }
         public Builder week(Week week) {
@@ -103,7 +103,7 @@ public class ScheduledTask {
         }
         public ScheduledTask build() {
             UserChecker.requireValidUser(user);
-            InterventionChecker.requireValidIntervention(intervention);
+            InterventionChecker.requireValidIntervention(interventionSchedule);
             WeekChecker.requireValidWeek(week);
             TypologySetChecker.requireValidTypologySet(typologySet);
             ConstrainedStringChecker.requireValidDescription(
@@ -112,7 +112,7 @@ public class ScheduledTask {
                     "Scheduled task's description");
             ScheduledTask scheduledTask = new ScheduledTask(this);
             this.user.addScheduledTask(scheduledTask);
-            this.intervention.addScheduledTask(scheduledTask);
+            this.interventionSchedule.addScheduledTask(scheduledTask);
             this.week.addScheduledTask(scheduledTask);
 
             return scheduledTask;

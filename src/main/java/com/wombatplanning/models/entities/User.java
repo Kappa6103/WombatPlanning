@@ -39,7 +39,7 @@ public class User {
     private Set<Worksite> worksiteSet = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Intervention> interventionsSet = new HashSet<>();
+    private Set<InterventionSchedule> interventionsSet = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<ScheduledTask> scheduledTaskSet = new HashSet<>();
@@ -99,7 +99,7 @@ public class User {
         return Collections.unmodifiableSet(scheduledTaskSet);
     }
 
-    public Set<Intervention> getInterventionsSet() {
+    public Set<InterventionSchedule> getInterventionsSet() {
         return Collections.unmodifiableSet(interventionsSet);
     }
 
@@ -147,8 +147,8 @@ public class User {
     }
 
 
-    public void addIntervention(Intervention intervention) {
-        interventionsSet.add(intervention);
+    public void addIntervention(InterventionSchedule interventionSchedule) {
+        interventionsSet.add(interventionSchedule);
     }
 
     public void addScheduledTask(ScheduledTask scheduledTask) {
