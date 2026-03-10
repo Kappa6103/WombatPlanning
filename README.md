@@ -1,3 +1,9 @@
+# Wombat Planning
+
+Wombat Planning is a Spring Boot web application that is going to help solve real problems encountered by gardening companies.
+
+It is still under heavy development. 
+
 # Technologies used
 
 * Core
